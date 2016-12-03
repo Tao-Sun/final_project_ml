@@ -50,8 +50,8 @@ class Autoencoder:
     
     def train(self, loss, learning_rate):
         # Create the gradient descent optimizer with the given learning rate.
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate)
-        #optimizer = tf.train.AdadeltaOptimizer(learning_rate)
+        #optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+        optimizer = tf.train.AdadeltaOptimizer(learning_rate)
         # Create a variable to track the global step.
         global_step = tf.Variable(0, name='global_step', trainable=False)
         # Use the optimizer to apply the gradients that minimize the loss    

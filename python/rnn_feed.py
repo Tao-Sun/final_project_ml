@@ -1,7 +1,7 @@
-from autoencoder import Autoencoder
+from rnn import RNN
 from six.moves import xrange
 import argparse
-from autoencoder_data_reader import read_data_sets
+from datasets import read_data_sets
 from datasets import Dataset
 import tensorflow as tf
 import sys
@@ -26,7 +26,7 @@ def placeholder_inputs(batch_size):
   """
 
   inputs_placeholder = tf.placeholder(tf.float32, shape=(batch_size,
-                                                         FLAGS.roi_size))
+                                                         FLAGS.time_steps, FLAGS.cell_legnth))
   return inputs_placeholder
   
 def fill_feed_dict(dataset, inputs_placeholder):
@@ -76,7 +76,7 @@ def do_eval(sess,
     
     print "loss: " + str(total_loss/num_examples)
 
-def train(_):
+def main(_):
     if tf.gfile.Exists(FLAGS.log_dir):
         tf.gfile.DeleteRecursively(FLAGS.log_dir)
     tf.gfile.MakeDirs(FLAGS.log_dir)
@@ -84,89 +84,49 @@ def train(_):
     datasets = read_data_sets(FLAGS.input_data_dir)
     #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
     
-    autoencoder = Autoencoder(FLAGS.layer_sizes)
+    rnn = RNN()
     
     with tf.Graph().as_default(), tf.Session() as session:
-        inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
+        inputs_placeholder = tf.placeholder(tf.int32, 
+            shape=(batch_size, num_steps))
+        initial_state = tf.zeros([batch_size, state_size], tf.float32)
         
-        encoded_inputs = autoencoder.inference(inputs_placeholder)
-        inference_op = autoencoder.inference(inputs_placeholder, False)
-        loss = autoencoder.loss(encoded_inputs, inputs_placeholder)
-        train_op = autoencoder.train(loss, FLAGS.learning_rate)
-        eval_correct = autoencoder.evaluation(encoded_inputs, inputs_placeholder)
+        rnn = RNN(state_size, vocab_size, embedding_size)
+        embedding_inputs = rnn.embeddings(inputs_placeholder)
         
-        init = tf.global_variables_initializer()
-        saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
-        checkpoint_file = os.path.join(FLAGS.log_dir, 'autoencoder.ckpt')
-        session.run(init)
-        
-        for step in xrange(FLAGS.max_steps):
-            start_time = time.time()
-            
-            feed_dict = fill_feed_dict(datasets.train, inputs_placeholder)
-            _, loss_value, encoded_inputs = session.run([train_op, loss, inference_op], feed_dict=feed_dict)
-            
-            duration = time.time() - start_time
-            if step % 100 == 0:
-                print loss_value
-                print encoded_inputs[0]
-                print encoded_inputs[1]
-                do_eval(session, eval_correct, inputs_placeholder, datasets.train)
-                saver.save(session, checkpoint_file, global_step=step)
-        
-        saver.save(session, checkpoint_file)
+        outputs = []
+        state = initial_state
+        with tf.variable_scope("RNN"):
+            for time_step in range(num_steps):
+                if time_step > 0: tf.get_variable_scope().reuse_variables()
+                cell_state, cell_output = rnn.cell_inference(embedding_inputs[:, time_step, :], state)
+                outputs.append(cell_output)
                 
-def inference(_):
-    if tf.gfile.Exists(FLAGS.output_dir):
-        tf.gfile.DeleteRecursively(FLAGS.output_dir)
-    tf.gfile.MakeDirs(FLAGS.output_dir)
-    
-    FLAGS.batch_size = 135
-    datasets = read_data_sets(FLAGS.input_data_dir, False)
-    
-    autoencoder = Autoencoder(FLAGS.layer_sizes)
-    with tf.Graph().as_default(), tf.Session() as session:
-        inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
+        y_loss = tf.placeholder(tf.int32, [batch_size, num_steps])
+        y_eval = tf.placeholder(tf.int32, [batch_size, num_steps])
+        #logits = tf.reshape(tf.concat(1, outputs), [batch_size, num_steps, vocab_size])
+        loss = rnn.loss(outputs, y_loss)
+        corrects = rnn.evaluation(outputs, y_eval)
         
-        inference_op = autoencoder.inference(inputs_placeholder, False)
+        train_op = rnn.training(loss, learning_rate)
         
-        saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
-        checkpoint_file = os.path.join(FLAGS.log_dir, 'autoencoder.ckpt')
-        saver.restore(session, checkpoint_file)
+        tf.initialize_all_variables().run()
         
-        samples_file = FLAGS.output_dir + '/encoded_samples.txt'
-        while datasets.train.epochs_completed == 0:
-            start_time = time.time()
-            
-            feed_dict = fill_feed_dict(datasets.train, inputs_placeholder)
-            encoded_inputs = session.run(inference_op, feed_dict=feed_dict)
-            
-            with open(samples_file, 'a') as output:
-                for time_series in np.transpose(encoded_inputs):
-                    for value in time_series:
-                        output.write(str(value) + ',')
-                    output.write("\n")
-                output.write("\n")
-    
-    labels_file = FLAGS.output_dir + '/encoded_labels.txt'
-    with open(labels_file, 'a') as output:
-        for label in datasets.train.labels:
-            output.write(str(label) + '\n')
+        for i in range(max_epoch):
+            for step, (x, y) in enumerate(reader.ptb_iterator(train_data, batch_size,
+                                            num_steps)):
+                print "epoch: " + str(step/num_steps) + ";step: " + str(step % num_steps)
+                cost, correct_num, _ = session.run([loss, corrects, train_op],
+                                {inputs_placeholder: x,
+                                 y_loss: y,
+                                 y_eval: y,
+                                 state: initial_state.eval()})
+                print "correct_num: " + str(correct_num)
+                
+
             
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--action',
-        type=str,
-        default='train',
-        help='Initial learning rate.'
-    )
-    parser.add_argument(
-        '--layer_sizes',
-        type=list,
-        default=[200, 100, 50, 5],
-        help='Initial learning rate.'
-    )
     parser.add_argument(
         '--learning_rate',
         type=float,
@@ -174,9 +134,9 @@ if __name__ == '__main__':
         help='Initial learning rate.'
     )
     parser.add_argument(
-        '--max_steps',
+        '--time_steps',
         type=int,
-        default=50000,
+        default=9,
         help='Number of steps to run trainer.'
     )
     parser.add_argument(
@@ -204,15 +164,12 @@ if __name__ == '__main__':
       help='Directory to put the log data.'
   )
     parser.add_argument(
-        '--roi_size',
+        '--cell_length',
         type=int,
-        default=120,
+        default=5,
         help='Number of ROI.'
     )
     
     FLAGS, unparsed = parser.parse_known_args()
     
-    if FLAGS.action == 'train':
-        tf.app.run(main=train, argv=[sys.argv[0]] + unparsed)
-    elif FLAGS.action == 'inference':
-        tf.app.run(main=inference, argv=[sys.argv[0]] + unparsed)
+    tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)

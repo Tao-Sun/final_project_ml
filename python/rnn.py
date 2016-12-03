@@ -14,10 +14,7 @@ FLAGS = flags.FLAGS
 
 class RNN(object):
     
-    def __init__(self, state_size, vocab_size, embedding_size, activation=sigmoid):
-        self._state_size = state_size
-        self._vocab_size = vocab_size
-        self._embedding_size = embedding_size
+    def __init__(self, activation=sigmoid):
         self._activation = activation
     
     def embeddings(self, inputs):
