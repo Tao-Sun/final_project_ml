@@ -1,7 +1,7 @@
 from rnn import RNN
 from six.moves import xrange
 import argparse
-from datasets import read_data_sets
+from rnn_data_reader import read_data_sets
 from datasets import Dataset
 import tensorflow as tf
 import sys
@@ -26,10 +26,10 @@ def placeholder_inputs(batch_size):
   """
 
   inputs_placeholder = tf.placeholder(tf.float32, shape=(batch_size,
-                                                         FLAGS.time_steps, FLAGS.cell_legnth))
+                                                         FLAGS.time_steps, FLAGS.input_size))
   return inputs_placeholder
   
-def fill_feed_dict(dataset, inputs_placeholder):
+def fill_feed_dict(dataset, inputs_placeholder, y_targets):
   """Fills the feed_dict for training the given step.
   A feed_dict takes the form of:
   feed_dict = {
@@ -45,10 +45,13 @@ def fill_feed_dict(dataset, inputs_placeholder):
   """
   # Create the feed_dict for the placeholders filled with the next
   # `batch size` examples.
-  inputs_feed = dataset.next_batch(FLAGS.batch_size)
+  samples, labels = dataset.next_batch_examples(FLAGS.batch_size)
+  
+  labels = np.repeat(labels.reshape((1, FLAGS.batch_size)), FLAGS.time_steps, axis=0)
   
   feed_dict = {
-      inputs_placeholder: inputs_feed
+      inputs_placeholder: samples,
+      y_targets: labels
   }
   return feed_dict
   
@@ -81,50 +84,46 @@ def main(_):
         tf.gfile.DeleteRecursively(FLAGS.log_dir)
     tf.gfile.MakeDirs(FLAGS.log_dir)
     
-    datasets = read_data_sets(FLAGS.input_data_dir)
+    input_size = FLAGS.input_size
+    state_size = FLAGS.state_size
+    label_size = FLAGS.label_size
+    batch_size = FLAGS.batch_size
+    time_steps = FLAGS.time_steps
+    
+    datasets = read_data_sets(FLAGS.input_data_dir, time_steps)
     #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
-    
-    rnn = RNN()
-    
     with tf.Graph().as_default(), tf.Session() as session:
-        inputs_placeholder = tf.placeholder(tf.int32, 
-            shape=(batch_size, num_steps))
-        initial_state = tf.zeros([batch_size, state_size], tf.float32)
+        inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
+        initial_states = tf.zeros([batch_size, state_size], tf.float32)
         
-        rnn = RNN(state_size, vocab_size, embedding_size)
-        embedding_inputs = rnn.embeddings(inputs_placeholder)
-        
-        outputs = []
-        state = initial_state
+        rnn = RNN(input_size, state_size, label_size)
+        series_outputs = []
+        previous_states = initial_states
         with tf.variable_scope("RNN"):
-            for time_step in range(num_steps):
+            for time_step in range(time_steps):
                 if time_step > 0: tf.get_variable_scope().reuse_variables()
-                cell_state, cell_output = rnn.cell_inference(embedding_inputs[:, time_step, :], state)
-                outputs.append(cell_output)
+                cell_states, cell_outputs = rnn.cell_inference(inputs_placeholder[:, time_step, :], previous_states)
+                series_outputs.append(cell_outputs)
                 
-        y_loss = tf.placeholder(tf.int32, [batch_size, num_steps])
-        y_eval = tf.placeholder(tf.int32, [batch_size, num_steps])
-        #logits = tf.reshape(tf.concat(1, outputs), [batch_size, num_steps, vocab_size])
-        loss = rnn.loss(outputs, y_loss)
-        corrects = rnn.evaluation(outputs, y_eval)
-        
-        train_op = rnn.training(loss, learning_rate)
-        
-        tf.initialize_all_variables().run()
-        
-        for i in range(max_epoch):
-            for step, (x, y) in enumerate(reader.ptb_iterator(train_data, batch_size,
-                                            num_steps)):
-                print "epoch: " + str(step/num_steps) + ";step: " + str(step % num_steps)
-                cost, correct_num, _ = session.run([loss, corrects, train_op],
-                                {inputs_placeholder: x,
-                                 y_loss: y,
-                                 y_eval: y,
-                                 state: initial_state.eval()})
-                print "correct_num: " + str(correct_num)
+                previous_states = cell_states
                 
-
+        y_targets = tf.placeholder(tf.int32, [time_steps, batch_size])
+       # y_targets = tf.placeholder(tf.int32, [batch_size])
+        loss = rnn.loss(series_outputs, y_targets)
+        #corrects = rnn.evaluation(outputs, y_eval)
+        train_op = rnn.train(loss, FLAGS.learning_rate)
+        
+        init = tf.global_variables_initializer()
+        session.run(init)
+        
+        for step in xrange(FLAGS.max_steps):
+            start_time = time.time()
             
+            feed_dict = fill_feed_dict(datasets.train, inputs_placeholder, y_targets)
+            _, loss_value = session.run([train_op, loss], feed_dict=feed_dict)
+            
+            if step % 1000 == 0:
+                print loss_value
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -134,16 +133,40 @@ if __name__ == '__main__':
         help='Initial learning rate.'
     )
     parser.add_argument(
+        '--max_steps',
+        type=int,
+        default=200000,
+        help='Number of steps to run trainer.'
+    )
+    parser.add_argument(
         '--time_steps',
         type=int,
         default=9,
-        help='Number of steps to run trainer.'
+        help='number of time steps in a series'
     )
     parser.add_argument(
       '--batch_size',
       type=int,
-      default=135,
+      default=200,
       help='Batch size.  Must divide evenly into the dataset sizes.'
+    )
+    parser.add_argument(
+        '--input_size',
+        type=int,
+        default=5,
+        help='vector length of the hidden state'
+    )
+    parser.add_argument(
+        '--state_size',
+        type=int,
+        default=30,
+        help='vector length of the hidden state'
+    )
+    parser.add_argument(
+        '--label_size',
+        type=int,
+        default=2,
+        help='number of classes'
     )
     parser.add_argument(
         '--output_dir',
@@ -162,12 +185,6 @@ if __name__ == '__main__':
       type=str,
       default='/tmp/data',
       help='Directory to put the log data.'
-  )
-    parser.add_argument(
-        '--cell_length',
-        type=int,
-        default=5,
-        help='Number of ROI.'
     )
     
     FLAGS, unparsed = parser.parse_known_args()

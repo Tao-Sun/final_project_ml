@@ -45,7 +45,7 @@ def fill_feed_dict(dataset, inputs_placeholder):
   """
   # Create the feed_dict for the placeholders filled with the next
   # `batch size` examples.
-  inputs_feed = dataset.next_batch(FLAGS.batch_size)
+  inputs_feed = dataset.next_batch_samples(FLAGS.batch_size)
   
   feed_dict = {
       inputs_placeholder: inputs_feed
