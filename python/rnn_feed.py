@@ -10,7 +10,6 @@ import numpy as np
 import random
 from tensorflow.examples.tutorials.mnist import input_data
 import os
-from itertools import izip
 
 # Basic model parameters as external flags.
 FLAGS = None
@@ -61,7 +60,6 @@ def do_eval(sess,
             eval_correct,
             inputs_placeholder,
             labels_placeholder,
-            time_steps,
             data_set):
     """Runs one evaluation against the full epoch of data.
     Args:
@@ -74,16 +72,11 @@ def do_eval(sess,
     """
     # And run one epoch of eval.
     true_count = 0  # Counts the number of correct predictions.  # Counts the number of correct predictions.
-    #assert data_set.num_examples % FLAGS.batch_size == 0
     steps_per_epoch = data_set.num_examples // FLAGS.batch_size
-    num_examples = steps_per_epoch * (FLAGS.batch_size/(135/time_steps))#data_set.num_examples / (135/time_steps)
+    num_examples = steps_per_epoch * FLAGS.batch_size
     for step in xrange(steps_per_epoch):
         feed_dict = fill_feed_dict(data_set, inputs_placeholder, labels_placeholder, False)
-        labels = sess.run(eval_correct, feed_dict=feed_dict)
-        predict_labels = labels[0]
-        group_labels = labels[1]
-        correct_num = sum(x==y for x, y in izip(group_labels, predict_labels))
-        true_count += correct_num
+        true_count += sess.run(eval_correct, feed_dict=feed_dict)
     precision = float(true_count) / num_examples
     print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
         (num_examples, true_count, precision))
@@ -98,9 +91,6 @@ def main(_):
     label_size = FLAGS.label_size
     batch_size = FLAGS.batch_size
     time_steps = FLAGS.time_steps
-    
-    assert 135 % time_steps == 0
-    assert batch_size % (135/time_steps) == 0
     
     datasets = read_data_sets(FLAGS.input_data_dir, time_steps)
     #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
@@ -122,12 +112,10 @@ def main(_):
         eval_labels_placeholder = tf.placeholder(tf.int32, [batch_size])
         
         #loss = rnn.loss(logits, eval_labels_placeholder)
-        loss= rnn.simple_loss(logits, eval_labels_placeholder)
+        loss = rnn.simple_loss(logits, eval_labels_placeholder)
         train_op = rnn.train(loss, FLAGS.learning_rate)
-        
-        eval_correct = rnn.evaluation(logits, eval_labels_placeholder, time_steps)
 
-        #eval_correct = rnn.evaluation(logits, eval_labels_placeholder, time_steps)
+        eval_correct = rnn.evaluation(logits, eval_labels_placeholder)
         
         init = tf.global_variables_initializer()
         session.run(init)
@@ -136,20 +124,18 @@ def main(_):
             start_time = time.time()
             
             feed_dict = fill_feed_dict(datasets.train, inputs_placeholder, eval_labels_placeholder, False)
-            _, loss_value= session.run([train_op, loss], feed_dict=feed_dict)
-            
+            _, loss_value = session.run([train_op, loss], feed_dict=feed_dict)
             
             if step % 1000 == 0:
                 print loss_value
             if (step + 1) % 10000 == 0 or (step + 1) == FLAGS.max_steps:
-#                 print('Testing Data Eval:')
-#                 
-#                 do_eval(session,
-#                         eval_correct,
-#                         inputs_placeholder,
-#                         eval_labels_placeholder,
-#                         time_steps,
-#                         datasets.train)
+                print('Training Data Eval:')
+                
+                do_eval(session,
+                        eval_correct,
+                        inputs_placeholder,
+                        eval_labels_placeholder,
+                        datasets.train)
                 
                 print('Validation Data Eval:')
                 
@@ -157,7 +143,6 @@ def main(_):
                         eval_correct,
                         inputs_placeholder,
                         eval_labels_placeholder,
-                        time_steps,
                         datasets.validation)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -182,7 +167,7 @@ if __name__ == '__main__':
     parser.add_argument(
       '--batch_size',
       type=int,
-      default=9,
+      default=10,
       help='Batch size.  Must divide evenly into the dataset sizes.'
     )
     parser.add_argument(
