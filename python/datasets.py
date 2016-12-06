@@ -54,17 +54,18 @@ class Dataset(object):
         end = self._index_in_epoch
         return self._examples[start:end]
     
-    def next_batch_examples(self, batch_size):
+    def next_batch_examples(self, batch_size, shuffle=True):
         """Return the next `batch_size` examples from this data set."""
     
         start = self._index_in_epoch
         self._index_in_epoch += batch_size
         if self._index_in_epoch > self._num_examples:
             # Shuffle the data
-            perm = np.arange(self._num_examples)
-            np.random.shuffle(perm)
-            self._examples = self._examples[perm]
-            self._labels = self._labels[perm]
+            if shuffle:
+                perm = np.arange(self._num_examples)
+                np.random.shuffle(perm)
+                self._examples = self._examples[perm]
+                self._labels = self._labels[perm]
             # Start next epoch
             start = 0
             self._index_in_epoch = batch_size

@@ -22,12 +22,9 @@ class RNN(object):
         self._dropout = dropout
         self._activation = activation
     
-    def dropout(self, dropout):
-        self._dropout = dropout
-    
     def cell_inference(self, cell_inputs, previous_state, scope=None):
         if self._dropout:
-            cell_inputs = nn_ops.dropout(cell_inputs, 0.65)
+            cell_inputs = nn_ops.dropout(cell_inputs, 0.8)
         
         with variable_scope.variable_scope(scope or type(self).__name__):
             state_weights = tf.Variable(tf.random_uniform([self._state_size, self._state_size], -1.0/math.sqrt(self._state_size), 1.0/math.sqrt(self._state_size)))
@@ -39,9 +36,9 @@ class RNN(object):
             
             output_weights = tf.Variable(tf.random_uniform([self._state_size, self._label_size], -1.0/math.sqrt(self._state_size), 1.0/math.sqrt(self._state_size)))
             cell_outputs = math_ops.matmul(cell_states, output_weights)
-            
-            if self._dropout:
-                cell_outputs = nn_ops.dropout(cell_outputs, 0.65)
+#             
+#             if self._dropout:
+#                 cell_outputs = nn_ops.dropout(cell_outputs, 0.8)
         
         return cell_states, cell_outputs
     
@@ -80,9 +77,57 @@ class RNN(object):
         # It returns a bool tensor with shape [batch_size] that is true for
         # the examples where the label is in the top k (here k=1)
         # of all logits for that example.
-        correct = tf.nn.in_top_k(logits[-1], labels, 1)
+        #correct = tf.nn.in_top_k(logits[-1], labels, 1)
+        predicts = tf.cast(tf.argmax(logits[-1], axis=1), tf.int32)
+        correct = tf.equal(predicts, labels)
         # Return the number of true entries.
         return tf.reduce_sum(tf.cast(correct, tf.int32))
+    
+    def subjects_evaluation(self, logits, labels, time_steps):
+        """Evaluate the quality of the logits at predicting the label.
+        Args:
+          logits: Logits tensor, float - [batch_size, NUM_CLASSES].
+          labels: Labels tensor, int32 - [batch_size], with values in the
+            range [0, NUM_CLASSES).
+        Returns:
+          A scalar int32 tensor with the number of examples (out of batch_size)
+          that were predicted correctly.
+        """
+        # For a classifier model, we can use the in_top_k Op.
+        # It returns a bool tensor with shape [batch_size] that is true for
+        # the examples where the label is in the top k (here k=1)
+        # of all logits for that example.
+        predicts = logits[-1]
+        subject_logits, subject_labels = self._get_subjects(predicts, labels, time_steps)
+        predict_subject_labels = []
+        for subject_logit in subject_logits:
+            #subject_softmax = tf.nn.softmax(subject_logit)
+            subject_predict_labels = tf.argmax(subject_logit, axis=1)
+            positive_pred = tf.less(0.5, tf.cast(tf.reduce_mean(subject_predict_labels), tf.float32))
+            
+            subject_predict_label = tf.cond(positive_pred, lambda: tf.Variable(1), lambda: tf.Variable(0))
+            predict_subject_labels.append(subject_predict_label)
+        
+        correct_subjects = tf.equal(predict_subject_labels, subject_labels)
+        correct_num = tf.reduce_sum(tf.cast(correct_subjects, tf.int32))
+        return correct_num
+    
+    def _get_subjects(self, logits, labels, time_steps):
+        subject_logits = []
+        subject_labels = []
+        
+        group_size = 120/time_steps
+        logtis_num = logits.get_shape()[0]
+        #assert logtis_num % group_size == 0
+        subjects_num = logtis_num / group_size
+        
+        for i in range(subjects_num):
+            start = i*group_size
+            end = i*group_size + group_size
+            subject_logits.append(logits[start:end])
+            subject_labels.append(labels[start])
+        
+        return subject_logits, subject_labels
     
     def train(self, loss, learning_rate):
         # Create the gradient descent optimizer with the given learning rate.
@@ -94,57 +139,3 @@ class RNN(object):
         train_op = optimizer.minimize(loss)
         return train_op
      
-# def main(_):
-#     raw_data = reader.ptb_raw_data(FLAGS.data_path)
-#     train_data, valid_data, test_data, _ = raw_data
-#     
-#     batch_size = 20
-#     state_size = 200
-#     input_size= 600
-#     label_size = 10000
-#     learning_rate = 1.0 
-#     max_epoch = 39
-#     num_steps = 35
-#     
-#     with tf.Graph().as_default(), tf.Session() as session:
-#         inputs_placeholder = tf.placeholder(tf.int32, 
-#             shape=(batch_size, num_steps))
-#         initial_state = tf.zeros([batch_size, state_size], tf.float32)
-#         
-#         rnn = RNN(state_size, label_size, input_size)
-#         embedding_inputs = rnn.embeddings(inputs_placeholder)
-#         
-#         outputs = []
-#         state = initial_state
-#         with tf.variable_scope("RNN"):
-#             for time_step in range(num_steps):
-#                 if time_step > 0: tf.get_variable_scope().reuse_variables()
-#                 cell_state, cell_output = rnn.cell_inference(embedding_inputs[:, time_step, :], state)
-#                 outputs.append(cell_output)
-#                 
-#         y_loss = tf.placeholder(tf.int32, [batch_size, num_steps])
-#         y_eval = tf.placeholder(tf.int32, [batch_size, num_steps])
-#         #logits = tf.reshape(tf.concat(1, outputs), [batch_size, num_steps, label_size])
-#         loss = rnn.loss(outputs, y_loss)
-#         corrects = rnn.evaluation(outputs, y_eval)
-#         
-#         train_op = rnn.training(loss, learning_rate)
-#         
-#         tf.initialize_all_variables().run()
-#         
-#         for i in range(max_epoch):
-#             for step, (x, y) in enumerate(reader.ptb_iterator(train_data, batch_size,
-#                                             num_steps)):
-#                 print "epoch: " + str(step/num_steps) + ";step: " + str(step % num_steps)
-#                 cost, correct_num, _ = session.run([loss, corrects, train_op],
-#                                 {inputs_placeholder: x,
-#                                  y_loss: y,
-#                                  y_eval: y,
-#                                  state: initial_state.eval()})
-#                 print "correct_num: " + str(correct_num)
-# 
-# 
-# if __name__ == '__main__':
-#     tf.app.run()       
-    
-

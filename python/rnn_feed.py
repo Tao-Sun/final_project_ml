@@ -29,7 +29,7 @@ def placeholder_inputs(batch_size):
                                                          FLAGS.time_steps, FLAGS.input_size))
   return inputs_placeholder
   
-def fill_feed_dict(dataset, inputs_placeholder, labels_placeholder, expand=True):
+def fill_feed_dict(dataset, inputs_placeholder, labels_placeholder, shuffle=True):
   """Fills the feed_dict for training the given step.
   A feed_dict takes the form of:
   feed_dict = {
@@ -45,10 +45,7 @@ def fill_feed_dict(dataset, inputs_placeholder, labels_placeholder, expand=True)
   """
   # Create the feed_dict for the placeholders filled with the next
   # `batch size` examples.
-  samples, labels = dataset.next_batch_examples(FLAGS.batch_size)
-  
-  if expand:
-      labels = np.repeat(labels.reshape((1, FLAGS.batch_size)), FLAGS.time_steps, axis=0)
+  samples, labels = dataset.next_batch_examples(FLAGS.batch_size, shuffle)
   
   feed_dict = {
       inputs_placeholder: samples,
@@ -60,7 +57,8 @@ def do_eval(sess,
             eval_correct,
             inputs_placeholder,
             labels_placeholder,
-            data_set):
+            data_set,
+            num_examples_coeff=1):
     """Runs one evaluation against the full epoch of data.
     Args:
       sess: The session in which the model has been trained.
@@ -73,7 +71,7 @@ def do_eval(sess,
     # And run one epoch of eval.
     true_count = 0  # Counts the number of correct predictions.  # Counts the number of correct predictions.
     steps_per_epoch = data_set.num_examples // FLAGS.batch_size
-    num_examples = steps_per_epoch * FLAGS.batch_size
+    num_examples = steps_per_epoch * (FLAGS.batch_size/num_examples_coeff)
     for step in xrange(steps_per_epoch):
         feed_dict = fill_feed_dict(data_set, inputs_placeholder, labels_placeholder, False)
         true_count += sess.run(eval_correct, feed_dict=feed_dict)
@@ -92,12 +90,14 @@ def main(_):
     batch_size = FLAGS.batch_size
     time_steps = FLAGS.time_steps
     
+    assert(batch_size % (120/time_steps) == 0)
+    
     datasets = read_data_sets(FLAGS.input_data_dir, time_steps)
     #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
     with tf.Graph().as_default(), tf.Session() as session:
         inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
         
-        rnn = RNN(input_size, state_size, label_size)
+        rnn = RNN(input_size, state_size, label_size, dropout=True)
         logits = []
         previous_states = tf.zeros([batch_size, state_size], tf.float32)
         with tf.variable_scope("RNN"):
@@ -116,6 +116,7 @@ def main(_):
         train_op = rnn.train(loss, FLAGS.learning_rate)
 
         eval_correct = rnn.evaluation(logits, eval_labels_placeholder)
+        subjects_eval_correct = rnn.subjects_evaluation(logits, eval_labels_placeholder, time_steps)
         
         init = tf.global_variables_initializer()
         session.run(init)
@@ -123,27 +124,41 @@ def main(_):
         for step in xrange(FLAGS.max_steps):
             start_time = time.time()
             
-            feed_dict = fill_feed_dict(datasets.train, inputs_placeholder, eval_labels_placeholder, False)
-            _, loss_value = session.run([train_op, loss], feed_dict=feed_dict)
+            feed_dict = fill_feed_dict(datasets.train, inputs_placeholder, eval_labels_placeholder)
+            _, loss_value= session.run([train_op, loss], feed_dict=feed_dict)
             
             if step % 1000 == 0:
                 print loss_value
             if (step + 1) % 10000 == 0 or (step + 1) == FLAGS.max_steps:
                 print('Training Data Eval:')
-                
                 do_eval(session,
                         eval_correct,
                         inputs_placeholder,
                         eval_labels_placeholder,
                         datasets.train)
-                
-                print('Validation Data Eval:')
-                
+                 
+                print('Training Subjects Data Eval:')
+                do_eval(session,
+                        subjects_eval_correct,
+                        inputs_placeholder,
+                        eval_labels_placeholder,
+                        datasets.validation,
+                        120/time_steps)
+                 
+                print('Test Data Eval:')
                 do_eval(session,
                         eval_correct,
                         inputs_placeholder,
                         eval_labels_placeholder,
-                        datasets.validation)
+                        datasets.test)
+                
+                print('Test Subjects Data Eval:')
+                do_eval(session,
+                        subjects_eval_correct,
+                        inputs_placeholder,
+                        eval_labels_placeholder,
+                        datasets.test,
+                        120/time_steps)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -161,13 +176,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--time_steps',
         type=int,
-        default=15,
+        default=12,
         help='number of time steps in a series'
     )
     parser.add_argument(
       '--batch_size',
       type=int,
-      default=10,
+      default=40,
       help='Batch size.  Must divide evenly into the dataset sizes.'
     )
     parser.add_argument(
@@ -179,7 +194,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--state_size',
         type=int,
-        default=35,
+        default=40,
         help='vector length of the hidden state'
     )
     parser.add_argument(
