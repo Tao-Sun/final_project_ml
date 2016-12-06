@@ -40,35 +40,43 @@ def extract_examples(file, time_steps):
 
 def read_data_sets(data_dir, time_steps, shuffle=True):
     
+    expanded_coeff = 135/time_steps
     with open(data_dir + '/encoded_samples.txt', 'r') as f:
         examples = extract_examples(f, time_steps)
     with open(data_dir + '/encoded_labels.txt', 'r') as f:
         labels = []
+        time_series_num = 0
         for line in f:
-            expanded_line_labels = [line.strip()] * (135/time_steps)
+            time_series_num += 1
+            expanded_line_labels = [line.strip()] * expanded_coeff
             labels = np.concatenate((labels, expanded_line_labels))
     
     assert examples.shape[0] == labels.shape[0]
     
+    #train = Dataset(examples, labels)
+    train_num = int(0.9*time_series_num)*expanded_coeff
+    train_examples = examples[0:train_num]
+    train_labels = labels[0:train_num]
+    train = Dataset(train_examples, train_labels)
+    validation = Dataset(train_examples, train_labels)
+    assert train_num % expanded_coeff == 0
+    
     if shuffle:
-        num_examples = examples.shape[0]
-        perm = np.arange(num_examples)
+        perm = np.arange(train_num)
         np.random.shuffle(perm)
-        examples = examples[perm]
-        labels = labels[perm]
-    
-    train = Dataset(examples, labels)
-    
-#     train_examples = examples[0:int(0.7*num_examples)]
-#     train_labels = labels[0:int(0.7*num_examples)]
-#     train = Dataset(train_examples, train_labels)
-#     
-#     test_examples = examples[int(0.7*num_examples):int(0.9*num_examples)]
-#     test_labels = labels[int(0.7*num_examples):int(0.9*num_examples)]
+        train_examples = train_examples[perm]
+        train_labels = train_labels[perm]
+     
+#     test_num = int(0.2*time_series_num)*expanded_coeff
+#     test_examples = examples[train_num:(train_num+test_num)]
+#     test_labels = labels[train_num:(train_num+test_num)]
 #     test = Dataset(test_examples, test_labels)
-#     
-#     validation_examples = examples[int(0.9*num_examples):]
-#     validation_labels = examples[int(0.9*num_examples):]
+#     assert test_num % expanded_coeff == 0
+#      
+#     train_num = int(0.7*time_series_num)*expanded_coeff
+#     validation_examples = examples[(train_num+test_num):]
+#     validation_labels = labels[(train_num+test_num):]
 #     validation = Dataset(validation_examples, validation_labels)
+#     assert len(validation_examples) % expanded_coeff == 0
     
-    return Datasets(train=train, validation=None, test=None)
+    return Datasets(train=train, test=None, validation=validation)

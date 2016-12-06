@@ -10,6 +10,7 @@ import numpy as np
 import random
 from tensorflow.examples.tutorials.mnist import input_data
 import os
+from itertools import izip
 
 # Basic model parameters as external flags.
 FLAGS = None
@@ -29,7 +30,7 @@ def placeholder_inputs(batch_size):
                                                          FLAGS.time_steps, FLAGS.input_size))
   return inputs_placeholder
   
-def fill_feed_dict(dataset, inputs_placeholder, y_targets):
+def fill_feed_dict(dataset, inputs_placeholder, labels_placeholder, expand=True):
   """Fills the feed_dict for training the given step.
   A feed_dict takes the form of:
   feed_dict = {
@@ -47,17 +48,20 @@ def fill_feed_dict(dataset, inputs_placeholder, y_targets):
   # `batch size` examples.
   samples, labels = dataset.next_batch_examples(FLAGS.batch_size)
   
-  labels = np.repeat(labels.reshape((1, FLAGS.batch_size)), FLAGS.time_steps, axis=0)
+  if expand:
+      labels = np.repeat(labels.reshape((1, FLAGS.batch_size)), FLAGS.time_steps, axis=0)
   
   feed_dict = {
       inputs_placeholder: samples,
-      y_targets: labels
+      labels_placeholder: labels
   }
   return feed_dict
   
 def do_eval(sess,
             eval_correct,
             inputs_placeholder,
+            labels_placeholder,
+            time_steps,
             data_set):
     """Runs one evaluation against the full epoch of data.
     Args:
@@ -69,15 +73,20 @@ def do_eval(sess,
         input_data.read_data_sets().
     """
     # And run one epoch of eval.
-    total_loss = 0.0  # Counts the number of correct predictions.
+    true_count = 0  # Counts the number of correct predictions.  # Counts the number of correct predictions.
+    #assert data_set.num_examples % FLAGS.batch_size == 0
     steps_per_epoch = data_set.num_examples // FLAGS.batch_size
-    num_examples = steps_per_epoch * FLAGS.batch_size
+    num_examples = steps_per_epoch * (FLAGS.batch_size/(135/time_steps))#data_set.num_examples / (135/time_steps)
     for step in xrange(steps_per_epoch):
-      feed_dict = fill_feed_dict(data_set, inputs_placeholder)
-      loss = sess.run(eval_correct, feed_dict=feed_dict) 
-      total_loss += loss * int(inputs_placeholder.get_shape()[0])
-    
-    print "loss: " + str(total_loss/num_examples)
+        feed_dict = fill_feed_dict(data_set, inputs_placeholder, labels_placeholder, False)
+        labels = sess.run(eval_correct, feed_dict=feed_dict)
+        predict_labels = labels[0]
+        group_labels = labels[1]
+        correct_num = sum(x==y for x, y in izip(group_labels, predict_labels))
+        true_count += correct_num
+    precision = float(true_count) / num_examples
+    print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
+        (num_examples, true_count, precision))
 
 def main(_):
     if tf.gfile.Exists(FLAGS.log_dir):
@@ -90,28 +99,35 @@ def main(_):
     batch_size = FLAGS.batch_size
     time_steps = FLAGS.time_steps
     
+    assert 135 % time_steps == 0
+    assert batch_size % (135/time_steps) == 0
+    
     datasets = read_data_sets(FLAGS.input_data_dir, time_steps)
     #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
     with tf.Graph().as_default(), tf.Session() as session:
         inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
-        initial_states = tf.zeros([batch_size, state_size], tf.float32)
         
         rnn = RNN(input_size, state_size, label_size)
-        series_outputs = []
-        previous_states = initial_states
+        logits = []
+        previous_states = tf.zeros([batch_size, state_size], tf.float32)
         with tf.variable_scope("RNN"):
             for time_step in range(time_steps):
                 if time_step > 0: tf.get_variable_scope().reuse_variables()
                 cell_states, cell_outputs = rnn.cell_inference(inputs_placeholder[:, time_step, :], previous_states)
-                series_outputs.append(cell_outputs)
+                logits.append(cell_outputs)
                 
                 previous_states = cell_states
                 
-        y_targets = tf.placeholder(tf.int32, [time_steps, batch_size])
-       # y_targets = tf.placeholder(tf.int32, [batch_size])
-        loss = rnn.loss(series_outputs, y_targets)
-        #corrects = rnn.evaluation(outputs, y_eval)
+        labels_placeholder = tf.placeholder(tf.int32, [time_steps, batch_size])
+        eval_labels_placeholder = tf.placeholder(tf.int32, [batch_size])
+        
+        #loss = rnn.loss(logits, eval_labels_placeholder)
+        loss= rnn.simple_loss(logits, eval_labels_placeholder)
         train_op = rnn.train(loss, FLAGS.learning_rate)
+        
+        eval_correct = rnn.evaluation(logits, eval_labels_placeholder, time_steps)
+
+        #eval_correct = rnn.evaluation(logits, eval_labels_placeholder, time_steps)
         
         init = tf.global_variables_initializer()
         session.run(init)
@@ -119,11 +135,30 @@ def main(_):
         for step in xrange(FLAGS.max_steps):
             start_time = time.time()
             
-            feed_dict = fill_feed_dict(datasets.train, inputs_placeholder, y_targets)
-            _, loss_value = session.run([train_op, loss], feed_dict=feed_dict)
+            feed_dict = fill_feed_dict(datasets.train, inputs_placeholder, eval_labels_placeholder, False)
+            _, loss_value= session.run([train_op, loss], feed_dict=feed_dict)
+            
             
             if step % 1000 == 0:
                 print loss_value
+            if (step + 1) % 10000 == 0 or (step + 1) == FLAGS.max_steps:
+#                 print('Testing Data Eval:')
+#                 
+#                 do_eval(session,
+#                         eval_correct,
+#                         inputs_placeholder,
+#                         eval_labels_placeholder,
+#                         time_steps,
+#                         datasets.train)
+                
+                print('Validation Data Eval:')
+                
+                do_eval(session,
+                        eval_correct,
+                        inputs_placeholder,
+                        eval_labels_placeholder,
+                        time_steps,
+                        datasets.validation)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -141,13 +176,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--time_steps',
         type=int,
-        default=9,
+        default=15,
         help='number of time steps in a series'
     )
     parser.add_argument(
       '--batch_size',
       type=int,
-      default=200,
+      default=9,
       help='Batch size.  Must divide evenly into the dataset sizes.'
     )
     parser.add_argument(
@@ -159,7 +194,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--state_size',
         type=int,
-        default=30,
+        default=35,
         help='vector length of the hidden state'
     )
     parser.add_argument(

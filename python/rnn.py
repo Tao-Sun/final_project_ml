@@ -1,5 +1,8 @@
 import math
+import numpy as np
 import tensorflow as tf
+from itertools import izip
+
 
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops.math_ops import sigmoid
@@ -8,19 +11,27 @@ from tensorflow.python.ops import variable_scope
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import nn_ops
 
+
 flags = tf.flags
 flags.DEFINE_string("data_path", None, "data_path")
 FLAGS = flags.FLAGS
 
 class RNN(object):
     
-    def __init__(self, input_size, state_size, label_size, activation=tanh):
+    def __init__(self, input_size, state_size, label_size, dropout=True, activation=tf.nn.relu):
         self._input_size = input_size
         self._state_size = state_size
         self._label_size = label_size
+        self._dropout = dropout
         self._activation = activation
     
+    def dropout(self, dropout):
+        self._dropout = dropout
+    
     def cell_inference(self, cell_inputs, previous_state, scope=None):
+#         if self._dropout:
+#             cell_inputs = nn_ops.dropout(cell_inputs, 0.65)
+        
         with variable_scope.variable_scope(scope or type(self).__name__):
             state_weights = tf.Variable(tf.random_uniform([self._state_size, self._state_size], -1.0/math.sqrt(self._state_size), 1.0/math.sqrt(self._state_size)))
             input_weights = tf.Variable(tf.random_uniform([self._input_size, self._state_size], -1.0/math.sqrt(self._input_size), 1.0/math.sqrt(self._input_size)))
@@ -31,7 +42,7 @@ class RNN(object):
             
             output_weights = tf.Variable(tf.random_uniform([self._state_size, self._label_size], -1.0/math.sqrt(self._state_size), 1.0/math.sqrt(self._state_size)))
             cell_outputs = math_ops.matmul(cell_states, output_weights)
-        
+
         return cell_states, cell_outputs
     
     def loss(self, logits, targets):
@@ -50,14 +61,68 @@ class RNN(object):
 #             logits[-1], targets))
         return loss
     
-    def evaluation(self, logits, targets):
-        correct_num = 0
-        for num_step in range(35):
-            logit = logits[num_step]
-            target = targets[:, num_step]
-            correct = tf.nn.in_top_k(logit, target, 1)
-            correct_num += tf.reduce_sum(tf.cast(correct, tf.int32))
-        return correct_num
+    def simple_loss(self, logits, targets):
+        loss = tf.reduce_mean(nn_ops.sparse_softmax_cross_entropy_with_logits(
+            logits[-1], targets))
+        return loss
+    
+    def evaluation(self, logits, labels, time_steps):
+        """Evaluate the quality of the logits at predicting the label.
+        Args:
+          logits: Logits tensor, float - [batch_size, NUM_CLASSES].
+          labels: Labels tensor, int32 - [batch_size], with values in the
+            range [0, NUM_CLASSES).
+        Returns:
+          A scalar int32 tensor with the number of examples (out of batch_size)
+          that were predicted correctly.
+        """
+        # For a classifier model, we can use the in_top_k Op.
+        # It returns a bool tensor with shape [batch_size] that is true for
+        # the examples where the label is in the top k (here k=1)
+        # of all logits for that example.
+        predicts = logits[-1]
+        predict_groups, group_labels = self._get_predict_groups(predicts, labels, time_steps)
+        predict_labels = []
+        for predict_group in predict_groups:
+            group_softmax = tf.nn.softmax(predict_group)
+            group_predict_labels = tf.argmax(group_softmax, axis=1)
+            number_of_1 = 0
+            number_of_0 = 0
+              
+            for i in range(group_predict_labels.get_shape()[0]):
+                if group_predict_labels[i] == 1:
+                    number_of_1 += 1
+                elif group_predict_labels[i] == 0:
+                    number_of_0 += 1
+            #assert number_of_1 + number_of_0 == group_predict_labels.get_shape()[0]
+            if number_of_1>=number_of_0:
+                group_label = 1  
+            else:
+                group_label = 0
+            predict_labels.append(group_label)
+         
+        #assert predict_labels. == len(group_labels)
+        #correct_num = [sum(tf.equal(tf.to_int32(x), tf.to_int32(y)) for x, y in izip(group_labels, predict_labels))]
+        return tf.concat(0, tf.concat(0, [[predict_labels], [group_labels]]))
+    
+    def _get_predict_groups(self, predicts, labels, time_steps):
+        predict_groups = []
+        group_labels = []
+        
+        group_size = 135/time_steps
+        predicts_num = predicts.get_shape()[0]
+        assert predicts_num % group_size == 0
+        groups_num = predicts_num / group_size
+        
+        for i in range(groups_num):
+            start = i*group_size
+            end = i*group_size + group_size
+            predict_groups.append(predicts[start:end])
+            group_labels.append(labels[start])
+        
+        return predict_groups, group_labels
+                
+            
     
     def train(self, loss, learning_rate):
         # Create the gradient descent optimizer with the given learning rate.
