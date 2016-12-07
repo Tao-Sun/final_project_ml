@@ -15,17 +15,14 @@ FLAGS = flags.FLAGS
 
 class RNN(object):
     
-    def __init__(self, input_size, state_size, label_size, dropout=True, activation=tanh):
+    def __init__(self, input_size, state_size, label_size, activation=tanh):
         self._input_size = input_size
         self._state_size = state_size
         self._label_size = label_size
-        self._dropout = dropout
         self._activation = activation
     
-    def cell_inference(self, cell_inputs, previous_state, scope=None):
-
-        
-        with variable_scope.variable_scope(scope or type(self).__name__):
+    def cell_inference(self, cell_inputs, previous_state, scope=None, dropout=False):
+        with variable_scope.variable_scope(scope or type(self).__name__):            
             state_weights = tf.get_variable("state_weights", \
                                             shape=[self._state_size, self._state_size])
 #                 initializer= tf.random_uniform([self._state_size, self._state_size], \
@@ -39,10 +36,16 @@ class RNN(object):
             b = tf.get_variable("b", initializer=tf.zeros([self._state_size]))
             c = tf.get_variable("c", initializer=tf.zeros([self._label_size]))
             
-#             if self._dropout:
-#                 cell_inputs = nn_ops.dropout(cell_inputs, 0.8)
-            linear_states = math_ops.matmul(previous_state, state_weights) \
-                + math_ops.matmul(cell_inputs, input_weights) + b
+            if dropout:
+                cell_inputs = nn_ops.dropout(cell_inputs, 0.8)
+
+            if dropout:
+                linear_states = math_ops.matmul(previous_state, state_weights) \
+                    + math_ops.matmul(cell_inputs, input_weights) + b
+            else:
+                linear_states = math_ops.matmul(previous_state, state_weights) \
+                    + math_ops.matmul(cell_inputs, tf.scalar_mul(0.8, input_weights)) + b
+                    
             cell_states = self._activation(linear_states)
             
             output_weights = tf.get_variable("output_weight", \
@@ -50,15 +53,27 @@ class RNN(object):
 #                 initializer= tf.random_uniform([self._state_size, self._label_size], \
 #                                                -1.0/math.sqrt(self._state_size), \
 #                                                1.0/math.sqrt(self._state_size)))
-            if self._dropout:
-                cell_outputs = math_ops.matmul(cell_states, nn_ops.dropout(output_weights, 0.75)) + c
+            if dropout:
+                cell_outputs = math_ops.matmul(nn_ops.dropout(cell_states, 0.5), output_weights) + c
             else:
-                cell_outputs = math_ops.matmul(cell_states, output_weights) + c
+                cell_outputs = math_ops.matmul(cell_states, tf.scalar_mul(0.5, output_weights)) + c
 
-#             if self._dropout:
-#                 cell_outputs = nn_ops.dropout(cell_outputs, 0.65)
-        
         return cell_states, cell_outputs
+    
+    def reference(self, inputs, dropout=False):
+        logits = []
+        batch_size = inputs.get_shape()[0]
+        time_steps = inputs.get_shape()[1] 
+        previous_states = tf.zeros([batch_size, self._state_size], tf.float32)
+        for time_step in range(time_steps):
+            if time_step > 0: tf.get_variable_scope().reuse_variables()
+            cell_states, cell_outputs = self.cell_inference(inputs[:,time_step,:], 
+                                                           previous_states, 
+                                                           dropout=dropout)
+            logits.append(cell_outputs)
+            previous_states = cell_states
+
+        return logits
     
     def loss(self, logits, targets):
         time_steps = len(logits)

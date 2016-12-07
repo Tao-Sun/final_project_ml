@@ -96,27 +96,20 @@ def main(_):
     #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
     with tf.Graph().as_default(), tf.Session() as session:
         inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
-        
-        rnn = RNN(input_size, state_size, label_size, dropout=True)
-        logits = []
-        previous_states = tf.zeros([batch_size, state_size], tf.float32)
-        with tf.variable_scope("RNN"):
-            for time_step in range(time_steps):
-                if time_step > 0: tf.get_variable_scope().reuse_variables()
-                cell_states, cell_outputs = rnn.cell_inference(inputs_placeholder[:, time_step, :], previous_states)
-                logits.append(cell_outputs)
-                
-                previous_states = cell_states
-                
         labels_placeholder = tf.placeholder(tf.int32, [time_steps, batch_size])
         eval_labels_placeholder = tf.placeholder(tf.int32, [batch_size])
         
+        rnn = RNN(input_size, state_size, label_size)
+        
+        with tf.variable_scope("RNN"):
+            train_logits = rnn.reference(inputs_placeholder, dropout=True)
+            test_logits = rnn.reference(inputs_placeholder)
         #loss = rnn.loss(logits, eval_labels_placeholder)
-        loss = rnn.simple_loss(logits, eval_labels_placeholder)
+        loss = rnn.simple_loss(train_logits, eval_labels_placeholder)
         train_op = rnn.train(loss, FLAGS.learning_rate)
 
-        eval_correct = rnn.evaluation(logits, eval_labels_placeholder)
-        subjects_eval_correct = rnn.subjects_evaluation(logits, eval_labels_placeholder, time_steps)
+        eval_correct = rnn.evaluation(test_logits, eval_labels_placeholder)
+        subjects_eval_correct = rnn.subjects_evaluation(test_logits, eval_labels_placeholder, time_steps)
         
         init = tf.global_variables_initializer()
         session.run(init)
