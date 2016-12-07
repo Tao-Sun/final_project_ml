@@ -26,31 +26,30 @@ class RNN(object):
 
         
         with variable_scope.variable_scope(scope or type(self).__name__):
-            state_weights = tf.get_variable("state_weights", initializer= \
-                tf.random_uniform([self._state_size, self._state_size], \
-                    -1.0/math.sqrt(self._state_size), 1.0/math.sqrt(self._state_size)))
-            input_weights = tf.get_variable("input_weights", initializer= \
-                tf.random_uniform([self._input_size, self._state_size], \
-                    -1.0/math.sqrt(self._input_size), 1.0/math.sqrt(self._input_size)))
+            state_weights = tf.get_variable("state_weights", \
+                                            shape=[self._state_size, self._state_size])
+#                 initializer= tf.random_uniform([self._state_size, self._state_size], \
+#                                                -1.0/math.sqrt(self._state_size), \
+#                                                1.0/math.sqrt(self._state_size)))
+            input_weights = tf.get_variable("input_weights", \
+                                            shape=[self._input_size, self._state_size])
+#                 initializer= tf.random_uniform([self._input_size, self._state_size], \
+#                                                -1.0/math.sqrt(self._input_size), \
+#                                                1.0/math.sqrt(self._input_size)))
             b = tf.get_variable("b", initializer=tf.zeros([self._state_size]))
             c = tf.get_variable("c", initializer=tf.zeros([self._label_size]))
             
 #             if self._dropout:
 #                 cell_inputs = nn_ops.dropout(cell_inputs, 0.8)
-            
-            if self._dropout:
-                linear_states = math_ops.matmul(previous_state, state_weights) \
-                    + math_ops.matmul(cell_inputs, input_weights) + b
-#                 linear_states = math_ops.matmul(previous_state, nn_ops.dropout(state_weights, 0.9)) \
-#                     + math_ops.matmul(cell_inputs, nn_ops.dropout(input_weights, 0.9)) + b
-            else:
-                linear_states = math_ops.matmul(previous_state, state_weights) \
-                    + math_ops.matmul(cell_inputs, input_weights) + b
+            linear_states = math_ops.matmul(previous_state, state_weights) \
+                + math_ops.matmul(cell_inputs, input_weights) + b
             cell_states = self._activation(linear_states)
             
-            output_weights = tf.get_variable("output_weight", initializer= \
-                tf.random_uniform([self._state_size, self._label_size], \
-                                  -1.0/math.sqrt(self._state_size), 1.0/math.sqrt(self._state_size)))
+            output_weights = tf.get_variable("output_weight", \
+                                             shape=[self._state_size, self._label_size])
+#                 initializer= tf.random_uniform([self._state_size, self._label_size], \
+#                                                -1.0/math.sqrt(self._state_size), \
+#                                                1.0/math.sqrt(self._state_size)))
             if self._dropout:
                 cell_outputs = math_ops.matmul(cell_states, nn_ops.dropout(output_weights, 0.7)) + c
             else:
@@ -77,15 +76,21 @@ class RNN(object):
 #             logits[-1], targets))
         return loss
     
-    def simple_loss(self, logits, targets, lamda=0.01):
+    def simple_loss(self, logits, targets, lamda=0.08):
         state_weights = tf.get_variable("state_weights", shape=[self._state_size, self._state_size])
         input_weights = tf.get_variable("input_weights", shape=[self._input_size, self._state_size])
         output_weights = tf.get_variable("output_weight", shape=[self._state_size, self._label_size])
+        b = tf.get_variable("b", shape=[self._state_size])
+        c = tf.get_variable("c", shape=[self._label_size])
+        
                                         
         loss = tf.reduce_mean(nn_ops.sparse_softmax_cross_entropy_with_logits(
             logits[-1], targets)) + lamda * tf.nn.l2_loss(state_weights) + \
             lamda * tf.nn.l2_loss(input_weights) + \
-            lamda * tf.nn.l2_loss(output_weights)
+            lamda * tf.nn.l2_loss(output_weights) + \
+            lamda * tf.nn.l2_loss(b) + \
+            lamda * tf.nn.l2_loss(c)
+            
         return loss
     
     def evaluation(self, logits, labels):

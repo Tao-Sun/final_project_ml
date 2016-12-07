@@ -182,7 +182,7 @@ if __name__ == '__main__':
     parser.add_argument(
       '--batch_size',
       type=int,
-      default=40,
+      default=10,
       help='Batch size.  Must divide evenly into the dataset sizes.'
     )
     parser.add_argument(
@@ -194,7 +194,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--state_size',
         type=int,
-        default=40,
+        default=50,
         help='vector length of the hidden state'
     )
     parser.add_argument(
