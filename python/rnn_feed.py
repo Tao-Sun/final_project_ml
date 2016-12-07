@@ -129,7 +129,7 @@ def main(_):
             
             if step % 1000 == 0:
                 print loss_value
-            if (step + 1) % 10000 == 0 or (step + 1) == FLAGS.max_steps:
+            if (step + 1) % 5000 == 0 or (step + 1) == FLAGS.max_steps:
                 print('Training Data Eval:')
                 do_eval(session,
                         eval_correct,
