@@ -51,7 +51,7 @@ class RNN(object):
 #                                                -1.0/math.sqrt(self._state_size), \
 #                                                1.0/math.sqrt(self._state_size)))
             if self._dropout:
-                cell_outputs = math_ops.matmul(cell_states, nn_ops.dropout(output_weights, 0.7)) + c
+                cell_outputs = math_ops.matmul(cell_states, nn_ops.dropout(output_weights, 0.75)) + c
             else:
                 cell_outputs = math_ops.matmul(cell_states, output_weights) + c
 
@@ -76,7 +76,7 @@ class RNN(object):
 #             logits[-1], targets))
         return loss
     
-    def simple_loss(self, logits, targets, lamda=0.08):
+    def simple_loss(self, logits, targets, lamda=0.05):
         state_weights = tf.get_variable("state_weights", shape=[self._state_size, self._state_size])
         input_weights = tf.get_variable("input_weights", shape=[self._input_size, self._state_size])
         output_weights = tf.get_variable("output_weight", shape=[self._state_size, self._label_size])

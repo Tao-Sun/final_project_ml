@@ -194,7 +194,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--state_size',
         type=int,
-        default=50,
+        default=40,
         help='vector length of the hidden state'
     )
     parser.add_argument(
