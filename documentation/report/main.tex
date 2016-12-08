@@ -1,0 +1,68 @@
+\documentclass[
+    a4paper,
+    man,
+    british
+]{apa6}
+
+\usepackage[british]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{epstopdf}
+\usepackage{csquotes}
+\usepackage[hidelinks]{hyperref}
+\usepackage{amssymb}
+ \usepackage{amsfonts}
+\usepackage[
+    style=apa,
+    backend=biber,
+    sortcites=true,
+    sorting=nyt,
+%    isbn=false,
+%    url=false,
+%    doi=false,
+%    eprint=false,
+    hyperref=false,
+    backref=false,
+%    firstinits=false,
+]{biblatex}
+
+\DeclareLanguageMapping{british}{british-apa}
+
+% maps apacite commands to biblatex commands
+\let \citeNP \cite
+\let \citeA \textcite
+\let \cite \parencite
+
+%%%
+% Apa Bib - enable reprint according to apa
+%%%
+
+\input{enable-reprint}
+
+
+\bibliography{refs}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Classification of Alzhermer Disease and Normal Congnitive Status with Recurrent Neural Networks in  Resting State fMRI}
+\shorttitle{AD Identification with RNN in fMRI}
+\author{Tao Sun}
+\affiliation{Ohio University\\
+2016}
+
+%\keywords{petri net, recall, long term working memory, expert domain knowledge}
+
+\begin{document}
+
+\maketitle
+
+
+\input{loader}
+
+\printbibliography
+
+\appendix
+
+\input{appendix}
+
+\end{document}

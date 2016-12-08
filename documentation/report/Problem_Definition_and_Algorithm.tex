@@ -1,0 +1,75 @@
+\section{Problem Definition and Algorithm}
+
+\subsection{Task Definition}
+
+\subsubsection{Data set and Preprocessing}
+
+The data used for training and test of the proposed classifier are retrieved from the Alzheimer's Disease Neuroimaging Initiative (ADNI) database. After filtering, images of 33 AD subjects and 50 NC subjects,  are downloaded. With most of these subjects are scanned more than once, we have 89 AD examples and 139 NC examples in the data set.The data set are divided into training data, test data, and validation data with a ratio of 7:2:1.
+
+The preprocess can be divided into 4 phases (\cite{suk}, \cite{chen}) :
+	\begin{enumerate}
+	\item Preprocessing of anatomical images
+	\item  Preprocessing of functional images
+	\item Anatomical standardization of functional images
+	\item Removal of noise signa
+	\end{enumerate}
+
+The results of the preproces are a set of mean time series 
+\begin{center}
+$ F^{(n)} \in \{ \emph{F} | \emph{F} = \left[ \textbf{f}_1, \cdots, \textbf{f}_t, \cdots, \textbf{f}_T \right],  \textbf{f}_t \in  \mathbb{R}^{R} \}, n=1,  \cdots, N$ ,
+\end{center}
+where $N=228$ is number of the scans, $R=120$ is the number of  ROIs, and $T=135$ is the length of a time series. 
+
+\subsubsection{Dimentionality Reduction}
+
+Suk, Lee, \& Shen (2015) proposed a DAE can used as an intermediate building block for deeper models in neuroimaging analysis. DAE is an unsupervised neural networks, the goal of which is setting a latent representation of feature vectors of a scan 
+\begin{center}
+$\emph{G} = \left[ \textbf{g}_1, \cdots, \textbf{g}_t, \cdots, \textbf{g}_T \right], \textbf{g}_t \in \mathbb{R}^{R}$ 
+\end{center}
+from its original form 
+\begin{center}
+$\emph{F} = \left[ \textbf{f}_1, \cdots, \textbf{f}_t, \cdots, \textbf{f}_T \right], \textbf{f}_t \in \mathbb{R}^{R} $
+\end{center} 
+by training a nonlinear approximation function $h(\textbf{f}_t) \approx \textbf{f}_t$. After training, only the first part of the DAE is used to transform each $\textbf{f}_t \in  \mathbb{R}^{R}$ into $ \textbf{x}_t \in  \mathbb{R}^{r}$, where $ r < R$. As a result, the encoded representation of a scan becomes
+\begin{center}
+$\emph{X} = \left[ \textbf{x}_1, \cdots, \textbf{x}_t, \cdots, \textbf{x}_T \right]$ 
+\end{center}
+to fed into the classification model to come. 
+
+\subsubsection{High-level RNN classifier and ensemble for classification}
+
+\textcite{wee} proposed a framework for brain functional connectivity analysis, in which each time series of each scan are decomposed into multiple overlapping sub-series by a sliding window. Justified by their work, a encoded time-series is splitted into identical-sized sub-series
+\begin{center}
+$\emph{X} = \left[ \textbf{x}_1, \cdots, \textbf{x}_s, \cdots, \textbf{x}_{S} \right]$, where $T=n*S, n$ is an integer. 
+\end{center}
+The identical-sized sub-series become the input to a RNN model. A RNN is a specialized class of neural network that is suitable for dynamic temporal sequences. Concretely, it utilizes its internal memory to process sequences of inputs.
+
+
+
+%Petri nets are used to model systems by means of a graphical language\parencites(cf.)(){reisig2013understanding}.
+%\textcite{goodman1968languages} proposes a framework with rich vocabulary for how to communicate about symbols and their representations;
+%an application of that vocabulary to informal diagram-style drawings was conducted \cite{kosslyn1987understanding} as well as to more formal systems, such as UML \cite{moody2009evaluating} and \textit{i*} \cite{moody2010visual}.
+%The proposed vocabulary is applied hereafter.
+%
+%The Petri net type this study deals with is the elementary system net \parencites(cf.)(){reisig2013understanding}.
+%It is one of the most basic Petri nets which can be understood by professionals as it is one of the first Petri net types which are taught at university.
+%It only consists of places, transitions and directed arcs; 
+%the visual vocabulary is depicted in figure~1 
+%%\ref{fig:visual_vocabulary_elementary_system_net} 
+% (see appendix~\ref{app:elsysnet}).
+%Even if professionals have not worked with elementary system nets for a while, the visual vocabulary of their domain is larger, never smaller.
+%The visual language of the Petri nets has a comparably short history.
+%\citeauthor{petri2008petri} is said to have invented the visual notation as early as 1939 \cite{petri2008petri}.
+%However, the first scientific publication about Petri nets did not include any visual syntax \parencites(cf.)(){carl1962petri} which then appeared shortly after \parencites(e.g.,)(){reisig1979formale, petri1980introduction, petri1977communication, Peterson1977Petrinets}. 
+%
+%A Petri net can be understood and examined as a mathematical, directed graph:
+%The places and transitions are the vertices and the arrows are the connecting edges.
+%This relationship both in mathematical and visual terms allows to transfer findings from the research of graph aesthetics which is especially interested in layouts.
+%Performance-based measures such as time and error have given insight into the consequences of layout decisions \cite{ware2002cognitive}.
+%Measurements such as eye-tracking and questionnaires give insight into how and why certain layout decisions are difficult \cite{huang2008beyond}.
+%It is argued that time and error can not give full insight into graph comprehension:
+%Some visual search problems can be solved in the same amount of time but with a different subjectively experienced difficulty \cite{huang2008beyond, huang2009measuring}.
+%This study can not fully cover possible influences of the layout aspect.
+%As a Petri net is a mathematical graph, the same Petri net can be depicted using several layout algorithms resulting in different graphical representations of the same system.
+%Hence in this study it is attempted to use a layout system which is consistent with the current Petri net literature.
+%In specific, in this study the Petri nets are aimed to be lay-outed similar to \citetitle{reisig2013understanding} \cite{reisig2013understanding}.

@@ -31,13 +31,19 @@ def extract_subject_examples(file):
     examples = np.array(X)
     return examples
 
-def split_subject_examples(subject_examples, time_steps):
+def split_subject_examples(subject_examples, time_steps, normalized=True):
     section_num = subject_examples[0].shape[0] / time_steps # 135/time_steps
     input_size = subject_examples[0].shape[1] 
     
     X = np.array([]).reshape([0, time_steps, input_size])
     for subject_example in subject_examples:
-        X = np.concatenate((X, np.split(subject_example, section_num)))
+        sub_subject_examples = []
+        for sub_subject_example in np.split(subject_example, section_num):
+            if normalized:
+               sub_subject_example = normalize(sub_subject_example, time_steps)
+            sub_subject_examples.append(sub_subject_example)
+        
+        X = np.concatenate((X, sub_subject_examples))
     
     return X
 

@@ -1,0 +1,55 @@
+\documentclass[12pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\usepackage{mathptmx}
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage{apacite}
+
+%SetFonts
+
+%SetFonts
+
+
+\title{Proposal: MCI Identification in Resting-State fMRI with Neural Networks}
+\author{Tao Sun}
+%\date{}							% Activate to display a given date or no date
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables for horizontal lines
+
+\begin{document}
+\maketitle
+
+
+\section{Situation}
+\begin{flushleft}
+The functional Magnetic Resonance Imaging (fMRI) is a functional neuroimaging procedure that measures the changes of signals associated with blood flow. It has become a powerful tool to understand the changes of brain function due to mental illness such as Mild Congnitive Impairment (MCI) and Alzheimer disease (AD). With the typical assumption that the functional network in a brain is stationary, many diagnosis methods of MCI and AD with resting-state fMRI (rs-fMRI) model the network with correlation analysis such as Pearson's correlation, independent component analysis \cite{li}. 
+\end{flushleft}
+
+
+\section{Problem and Solution}
+\begin{flushleft}
+Recent studies \cite{hutch} suggest that significant temporal changes exist in functional connectivity. Valuable information might be lost when the estimation of connectivity is based on correlation analysis restricted to a single value obtained from the entire scanning time.
+\end{flushleft}
+
+
+\begin{flushleft}
+To model the temporal variation, Eavani et al. (2013) proposed a Hidden Markov Model (HMM) framework, which associates discrete hidden states with distinct connectivity patterns. Suk, Lee, \& Shen (2015) builds a probabilistic model combining Deep Auto-Encoder (DAE) and HMM to model functional dynamics in rs-fMRI and estimate the likelihood of a subject as belonging to MCI status or normal healthy control (NC). The model first extracts mean time series of Regions of Interest (ROIs) from re-fMRI images.  Then a DAE is trained to transform feature vectors of the time serires $ F = \left[  \textbf{f}_1, \cdots, \textbf{f}_t, \cdots, \textbf{f}_T \right] $ into an low-dimensional embedding space $ X = \left[  \textbf{x}_1, \cdots, \textbf{x}_t, \cdots, \textbf{x}_T \right]$. It is noted that $T=130$ and the dimensions of $\textbf{x}_t$ and $\textbf{x}_t$ are 120 and 2 respectively \cite{suk}. Concretely, at one time point of a time series the model takes as input the mean intensities of ROIs and encodes it into a low-dimension space. With low-dimensional data, two HMM models are trained for the classes of NC subjects and MCI subjects separately. During testing, the class of the model with higher likelihood for a testing sample is taken as a clinical decision. Actually, the basic points backing the two HMM-based frameworks are similar, only that original high-dimensional data is used in Eavani's work.
+\end{flushleft}
+
+\begin{flushleft}
+Besides, these two adapted methods both are based on a common hypothesis that they can \textquotedblleft decode connectivity dynamics into a temporal sequence of hidden network \textquoteleft states \textquoteright for each subject\textquotedblright \cite{eavani}. However, with respect to rationality of the hypothesis, the authors does not provide detailed explanation. Actually, for the diagnosis purpose, these hidden states and their definitions are not relevant, which means that the HMM framework used in these two models could potentially be replaced by other binary classifiers such as neural networks. In terms of this, Zhewei Wang has made lots of valuable attempts based on Suk's model.
+\end{flushleft}
+
+\section{Implementation}
+\begin{flushleft}
+The project can be viewed as a continue of Zhewei's work. The data comes from ADNI2 dataset, in which there are 34 AD subjects and 52 NC subjects. Since Zhewei suggests that overfitting might happen when RNN is used in Suk's model in place of HMM, the project will first take multi-perceptron neutral networks as the binary classifier. Actually, Suk mentions in his paper that since there are 130 volumens per subject, i.e. $T=130$, overfitting can be avoided in the DAE framework. With almost identical scale of dataset, overfitting might not be a problem if CNN or RNN is used as an alternative of HMM in Eavani's model. In the project, I will also try this direction.
+\end{flushleft}
+
+\bibliographystyle{apacite}
+\bibliography{refs}
+
+
+\end{document}  

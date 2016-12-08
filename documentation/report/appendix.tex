@@ -1,0 +1,79 @@
+\section{Visual vocabulary of an Elementary System Net}
+\label{app:elsysnet}
+
+\begin{figure}
+    \includegraphics[scale=1]{graphics/visual_vocabulary_elementary_system_net}
+    \caption{A circle depicts a place, a rectangle depicts a transition and an arrow depicts and arc. The arrow connects places with transitions and can be bent for that purpose. The green color is the standard color of the }
+    \label{fig:visual_vocabulary_elementary_system_net}
+\end{figure}
+
+\section{Random Petri Net Generation Algorithm}
+\label{app:generated}
+
+\begin{verbatim}
+Input
+  n: number of graph elements
+  f: number of interconnections  
+Output
+  P: set of places
+  T: set of transitions
+  F: set of f el P x T U T x P
+
+Algorithm
+  tmp := gaussian(location=n)
+  while tmp < 0:
+    tmp := gaussian(location=n)
+  sizeP := n - tmp
+  sizeT := n - sizeP
+  P := {p_1, p_2,..., p_sizeP}
+  T := {t_1, t_2,..., t_sizeT}
+  
+  P_2 = {}
+  T_2 = {}
+  p_last := random element from P
+  t_last := random element from T
+  while f > 0:
+    p_Pool := P \ P_2 if (P \ P_2) != {} else P
+    t_Pool := T \ T_2 if (T \ T_2) != {} else T
+    p := random(p_alt, random element from p_Pool)
+    t := random(t_alt, random element from t_Pool)
+    P_2 := P_2 U p
+    T_2 := T_2 U t
+    if random(TRUE, FALSE):
+      F := F U (p, t)
+      p_last := random element from P_2
+      t_last := t
+    else:
+      F := F U (t, p)
+      p_last := p
+      t_last := random element from T_2
+    f--
+    if places or transitions are not yet connected:
+      discard Petri net
+\end{verbatim}
+
+\section{Layout Algorithm}
+\label{app:formatted}
+
+\begin{verbatim}
+Input
+  P: set of places
+  T: set of transitions
+  F: set of f el P x T U T x P
+Output
+  Layout
+  
+Algorithm
+  Draw grid
+  Search for whether there is p el P with no incoming arc
+  If yes: P_2 := all p el P with no incoming arc
+  Else: P_2 := {random p el P}
+  i := 0
+  while F_2 != F:
+    draw all p el P_2 on the ith grid line vertically arranged if not yet present 
+    draw all t for which (p, t) el F on the (i+1)th grid line if not yet present
+    draw the arcs between p and t for all drawn t if not yet present
+    P_2 := {p | (t, p) el F for all drawn t}
+    F_2 := F_2 U (t, p) U (t, p) for t, p part of the drawing
+    i++
+\end{verbatim}

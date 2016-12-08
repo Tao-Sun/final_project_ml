@@ -1,0 +1,127 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.7 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist[entry]{nyt/global/}
+    \entry{li}{article}{}
+      \name{author}{7}{}{%
+        {{uniquename=0,hash=2af761d9bef859ea29248418adce0dd7}{%
+           family={Li},
+           family_i={L\bibinitperiod},
+           given={Yang},
+           given_i={Y\bibinitperiod}}}%
+        {{uniquename=0,hash=7173922936ea9269921937c906746261}{%
+           family={Wang},
+           family_i={W\bibinitperiod},
+           given={Yaping},
+           given_i={Y\bibinitperiod}}}%
+        {{uniquename=0,hash=921a91f77439fcd1329accfc6042cd60}{%
+           family={Wu},
+           family_i={W\bibinitperiod},
+           given={Guorong},
+           given_i={G\bibinitperiod}}}%
+        {{uniquename=0,hash=20f1235dbaae639ab190cc695022122d}{%
+           family={Shi},
+           family_i={S\bibinitperiod},
+           given={Feng},
+           given_i={F\bibinitperiod}}}%
+        {{uniquename=0,hash=ce6516160c644097606645faba5b002f}{%
+           family={Zhou},
+           family_i={Z\bibinitperiod},
+           given={Luping},
+           given_i={L\bibinitperiod}}}%
+        {{uniquename=0,hash=bb9b0d9c8cb21b85fd4b5f2d033a0035}{%
+           family={Lin},
+           family_i={L\bibinitperiod},
+           given={Weili},
+           given_i={W\bibinitperiod}}}%
+        {{uniquename=0,hash=4be3a7080769a01b5a9027ae92b8c440}{%
+           family={Shen},
+           family_i={S\bibinitperiod},
+           given={Dinggang},
+           given_i={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{6f58cd95635bdfcb3ebf0091d0da045f}
+      \strng{fullhash}{cd80a7cd36cde96e09e5c5c676031af6}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelyear}{2012}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neurobiology of aging}
+      \field{number}{2}
+      \field{title}{Reasoning with Exceptions: An Event-related Brain Potentials Study}
+      \field{volume}{33}
+      \field{year}{2012}
+      \field{pages}{427.e15\bibrangedash 427.e30}
+      \range{pages}{-1}
+    \endentry
+    \entry{suk}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=472ce3789ff39b89f6227355647332f3}{%
+           family={Suk},
+           family_i={S\bibinitperiod},
+           given={Heung-Il},
+           given_i={H\bibinithyphendelim I\bibinitperiod}}}%
+        {{uniquename=0,hash=1a06d15430796bd2519e5e52a8af269f}{%
+           family={Lee},
+           family_i={L\bibinitperiod},
+           given={Seong-Whan},
+           given_i={S\bibinithyphendelim W\bibinitperiod}}}%
+        {{uniquename=0,hash=4be3a7080769a01b5a9027ae92b8c440}{%
+           family={Shen},
+           family_i={S\bibinitperiod},
+           given={Dinggang},
+           given_i={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{20350d42f48d479dd6e0915d07efcce4}
+      \strng{fullhash}{9880960e179743a4a79632137f631c9a}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelyear}{2015}
+      \field{labelmonth}{10}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Conference on Medical Image Computing and Computer-Assisted Intervention}
+      \field{month}{10}
+      \field{title}{A hybrid of deep network and hidden markov model for MCI identification with resting-state fMRI}
+      \field{year}{2015}
+      \field{pages}{573\bibrangedash 580}
+      \range{pages}{8}
+    \endentry
+  \endsortlist
+  \missing{fowlkes1983method}
+  \missing{egan1979chunking}
+  \missing{chen}
+  \missing{oulasvirta2006surviving}
+  \missing{chase1973mind}
+  \missing{baddeley1986working}
+  \missing{ratner1986finding}
+  \missing{renew}
+  \missing{moss2006role}
+\endrefsection
+\endinput
+

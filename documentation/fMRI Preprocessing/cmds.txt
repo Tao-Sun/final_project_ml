@@ -1,0 +1,7 @@
+1. dcm to nii
+
+	dcm2nii -o ind *.dcm
+
+
+
+fslsplit
