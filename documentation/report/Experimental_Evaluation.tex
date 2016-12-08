@@ -1,55 +1,55 @@
 \section{Study 1}
 
-This study is designed as a pilot study and serves to identify the appropriate difficulty for the Petri net material.
-The amount of places and transitions and their interconnection should make the task feasible, meaning the recall rate should be far above a randomly drawn new Petri net, but still each recalled drawing should contain some error.
-Successful analyses have been conducted with accuracy measure from 58\% correct recall \cite{egan1979chunking} up to 95\% \cite{moss2006role} which is hence taken as the desired lower and upper boundary respectively.
-
-\subsection{Method}
-
-\subsubsection{Participants}
-Three first-year students, three third-year students who have taken at least one Petri net class and three scientific employees who work with Petri net related material on a daily basis shall participate in this study.
-The students' participation in experiments is mandatory and part of their curriculum, the scientific assistants get cookies as a reward.
-
-\subsubsection{Materials}
-Petri nets are randomly generated (cf. Appendix~\ref{app:generated}) and visually formatted (cf. Appendix~\ref{app:formatted}).
-A range of 5 and 30 graph elements ($n$) is used with a number of interconnections ($f$) between $f=n-1$ and $f=round(3/2 * n)$.
-Grid lines are drawn onto the background so that each place or transition is on an intersection of one of the vertical and horizontal lines.
-
-\subsubsection{Procedure}
-In the beginning the participant is introduced in using \citetitle{renew} \cite{renew} as a tool for drawing Petri nets.
-Further participant is informed that any element which is not on one of the intersections between the vertical and horizontal lines is removed during the scoring process.
-Each participant does 13 runs from which the first run is discarded as a demo run.
-In that way each participant sees 13 different Petri nets.
-The participant sits in front of the screen and is presented one of the generated Petri nets for 5 seconds.
-After that immediately the recall phase starts.
-Using \citetitle{renew} the participant is asked to reconstruct the previously seen net.
-On the background the same grid lines are presented and the participant is asked to position the places and transitions on the grid lines as the participant has seen it before.
-After the participant believes that everything which could be remembered has been drawn, the file is saved, printed and closed.
-The participant is then asked to indicate the used strategy on the print-out and circle which symbols were grouped together.
-
-\subsection{Scoring}
-\label{subsec:scoring}
-The scoring is inspired on a previous study on mechanical engineers \cite{moss2006role} which used an extended scoring system of \textcite{chase1973mind}.
-The scoring of each recall is done in the following manner:
-
-\begin{APAenumerate}
-	\item Each place and transition which is not drawn on the grid intersections is deleted (including the arcs which connected the deleted element with other elements).
-	\item  Each place and transition which has been omitted on the grid is added to the element omission score.
-	\item Each place and transition which appears on a wrong position on the grid is added to the element insertion error score.
-	\item Each arc which connects two previously unconnected elements is added to the arc wrong connection score.
-	\item Each arc which is omitted is added to the arc omission score.  
-	\item Each arc which points into the wrong direction is added to the arc wrong direction score.
-\end{APAenumerate}
-
-The total weighted error score for a drawing is the weighted sum of all the errors mentioned above.
-Each error score is weighted with $1$ except the arc wrong direction score which is weighted with $0.5$.
-
-\subsection{Data Analysis}
-
-For each participant and each Petri net first the error score is calculated.
-Then correct recall score is calculated as a sum of all correctly positioned elements.
-Then the ratio of the correct recall score to the sum of both the total weighted error score and the correct recall score is calculated.
-If this ratio is in the range of 58 to 95\%, it is selected as appropriate material.
-Otherwise the Petri net is discarded.
-Further the Petri nets are ranked according to their ratio and the rank list is partitioned into three proportions of similar sizes.
-The partitions are labeled with their respective difficulty level, viz. easy, medium and difficult.
+%This study is designed as a pilot study and serves to identify the appropriate difficulty for the Petri net material.
+%The amount of places and transitions and their interconnection should make the task feasible, meaning the recall rate should be far above a randomly drawn new Petri net, but still each recalled drawing should contain some error.
+%Successful analyses have been conducted with accuracy measure from 58\% correct recall \cite{egan1979chunking} up to 95\% \cite{moss2006role} which is hence taken as the desired lower and upper boundary respectively.
+%
+%\subsection{Method}
+%
+%\subsubsection{Participants}
+%Three first-year students, three third-year students who have taken at least one Petri net class and three scientific employees who work with Petri net related material on a daily basis shall participate in this study.
+%The students' participation in experiments is mandatory and part of their curriculum, the scientific assistants get cookies as a reward.
+%
+%\subsubsection{Materials}
+%Petri nets are randomly generated (cf. Appendix~\ref{app:generated}) and visually formatted (cf. Appendix~\ref{app:formatted}).
+%A range of 5 and 30 graph elements ($n$) is used with a number of interconnections ($f$) between $f=n-1$ and $f=round(3/2 * n)$.
+%Grid lines are drawn onto the background so that each place or transition is on an intersection of one of the vertical and horizontal lines.
+%
+%\subsubsection{Procedure}
+%In the beginning the participant is introduced in using \citetitle{renew} \cite{renew} as a tool for drawing Petri nets.
+%Further participant is informed that any element which is not on one of the intersections between the vertical and horizontal lines is removed during the scoring process.
+%Each participant does 13 runs from which the first run is discarded as a demo run.
+%In that way each participant sees 13 different Petri nets.
+%The participant sits in front of the screen and is presented one of the generated Petri nets for 5 seconds.
+%After that immediately the recall phase starts.
+%Using \citetitle{renew} the participant is asked to reconstruct the previously seen net.
+%On the background the same grid lines are presented and the participant is asked to position the places and transitions on the grid lines as the participant has seen it before.
+%After the participant believes that everything which could be remembered has been drawn, the file is saved, printed and closed.
+%The participant is then asked to indicate the used strategy on the print-out and circle which symbols were grouped together.
+%
+%\subsection{Scoring}
+%\label{subsec:scoring}
+%The scoring is inspired on a previous study on mechanical engineers \cite{moss2006role} which used an extended scoring system of \textcite{chase1973mind}.
+%The scoring of each recall is done in the following manner:
+%
+%\begin{APAenumerate}
+%	\item Each place and transition which is not drawn on the grid intersections is deleted (including the arcs which connected the deleted element with other elements).
+%	\item  Each place and transition which has been omitted on the grid is added to the element omission score.
+%	\item Each place and transition which appears on a wrong position on the grid is added to the element insertion error score.
+%	\item Each arc which connects two previously unconnected elements is added to the arc wrong connection score.
+%	\item Each arc which is omitted is added to the arc omission score.  
+%	\item Each arc which points into the wrong direction is added to the arc wrong direction score.
+%\end{APAenumerate}
+%
+%The total weighted error score for a drawing is the weighted sum of all the errors mentioned above.
+%Each error score is weighted with $1$ except the arc wrong direction score which is weighted with $0.5$.
+%
+%\subsection{Data Analysis}
+%
+%For each participant and each Petri net first the error score is calculated.
+%Then correct recall score is calculated as a sum of all correctly positioned elements.
+%Then the ratio of the correct recall score to the sum of both the total weighted error score and the correct recall score is calculated.
+%If this ratio is in the range of 58 to 95\%, it is selected as appropriate material.
+%Otherwise the Petri net is discarded.
+%Further the Petri nets are ranked according to their ratio and the rank list is partitioned into three proportions of similar sizes.
+%The partitions are labeled with their respective difficulty level, viz. easy, medium and difficult.

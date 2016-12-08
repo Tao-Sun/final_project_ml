@@ -1,0 +1,30 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{autoencoder.png}
+    \caption{Autoencoder}
+    \label{fig:awesome_image}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{stackedDAE.png}
+    \caption{Stacked Autoencoder}
+    \label{fig:awesome_image}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{rnn.png}
+    \caption{Recurrent Neural Networks}
+    \label{fig:awesome_image}
+\end{figure*}
+\efloatseparator
+ 

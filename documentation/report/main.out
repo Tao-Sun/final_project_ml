@@ -1,23 +1,9 @@
 \BOOKMARK [1][-]{section*.1}{Classification of Alzhermer Disease and Normal Congnitive Status with Recurrent Neural Networks in Resting State fMRI}{}% 1
 \BOOKMARK [1][-]{section*.2}{Introduction}{}% 2
 \BOOKMARK [1][-]{section*.3}{Problem Definition and Algorithm}{}% 3
-\BOOKMARK [2][-]{section*.4}{Task Definition}{section*.3}% 4
-\BOOKMARK [3][-]{section*.5}{Data set and Preprocessing}{section*.4}% 5
-\BOOKMARK [3][-]{section*.6}{Dimentionality Reduction}{section*.4}% 6
-\BOOKMARK [3][-]{section*.7}{High-level RNN classifier and ensemble for classification}{section*.4}% 7
-\BOOKMARK [1][-]{section*.8}{Study 1}{}% 8
-\BOOKMARK [2][-]{section*.9}{Method}{section*.8}% 9
-\BOOKMARK [3][-]{section*.10}{Participants}{section*.9}% 10
-\BOOKMARK [3][-]{section*.11}{Materials}{section*.9}% 11
-\BOOKMARK [3][-]{section*.12}{Procedure}{section*.9}% 12
-\BOOKMARK [2][-]{section*.13}{Scoring}{section*.8}% 13
-\BOOKMARK [2][-]{section*.14}{Data Analysis}{section*.8}% 14
-\BOOKMARK [1][-]{section*.15}{Study 2}{}% 15
-\BOOKMARK [2][-]{section*.16}{Method}{section*.15}% 16
-\BOOKMARK [3][-]{section*.17}{Participants}{section*.16}% 17
-\BOOKMARK [3][-]{section*.18}{Materials}{section*.16}% 18
-\BOOKMARK [3][-]{section*.21}{Procedure}{section*.16}% 19
-\BOOKMARK [2][-]{section*.22}{Data Analysis}{section*.15}% 20
-\BOOKMARK [3][-]{section*.23}{Performance Analysis}{section*.22}% 21
-\BOOKMARK [3][-]{section*.24}{Inter-Response Time Analysis}{section*.22}% 22
-\BOOKMARK [1][-]{section*.25}{Implementation of this Project}{}% 23
+\BOOKMARK [2][-]{section*.4}{Data set and Preprocessing}{section*.3}% 4
+\BOOKMARK [2][-]{section*.5}{Dimensionality Reduction with DAE}{section*.3}% 5
+\BOOKMARK [2][-]{section*.6}{High-level RNN classifiers and their ensemble for subject diagnosis}{section*.3}% 6
+\BOOKMARK [1][-]{section*.7}{Study 1}{}% 7
+\BOOKMARK [1][-]{section*.8}{Study 2}{}% 8
+\BOOKMARK [1][-]{section*.9}{Implementation of this Project}{}% 9

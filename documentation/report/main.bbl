@@ -19,7 +19,70 @@
 
 \refsection{0}
   \sortlist[entry]{nyt/global/}
-    \entry{li}{article}{}
+    \entry{biswal95}{article}{}
+      \name{author}{4}{}{%
+        {{uniquename=0,hash=bc97edff1a5473c6195e3c98e7f39358}{%
+           family={Biswal},
+           family_i={B\bibinitperiod},
+           given={Bharat},
+           given_i={B\bibinitperiod}}}%
+        {{uniquename=0,hash=72542a2a872f0062d957087c7f06337c}{%
+           family={Yetkin},
+           family_i={Y\bibinitperiod},
+           given={F.\bibnamedelimi Zerrin},
+           given_i={F\bibinitperiod\bibinitdelim Z\bibinitperiod}}}%
+        {{uniquename=0,hash=7825c1159155cd63d714ca5a566859fe}{%
+           family={Haughton},
+           family_i={H\bibinitperiod},
+           given={Victor\bibnamedelima M},
+           given_i={V\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{uniquename=0,hash=460f70c24a0bbeea01bcdab9699c93d4}{%
+           family={Hyde},
+           family_i={H\bibinitperiod},
+           given={James},
+           given_i={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{791765217d6fe26ff977a8f51ff859b8}
+      \strng{fullhash}{fb2310dc8e580b2a3a1a3a673ae57aed}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelyear}{1995}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Magnetic resonance in medicine}
+      \field{title}{Functional connectivity in the motor cortex of resting human brain using echo‐planar mri}
+      \field{volume}{34}
+      \field{year}{1995}
+      \field{pages}{537\bibrangedash 541}
+      \range{pages}{5}
+    \endentry
+    \entry{hutch13}{article}{}
+      \name{author}{1}{}{%
+        {{uniquename=0,hash=9e6a8073b663e79c7700af7591ab52a4}{%
+           family={Hutchison},
+           family_i={H\bibinitperiod},
+           given={R.\bibnamedelimi Matthew},
+           given_i={R\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{9e6a8073b663e79c7700af7591ab52a4}
+      \strng{fullhash}{9e6a8073b663e79c7700af7591ab52a4}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelyear}{2013}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neuroimage}
+      \field{title}{Dynamic functional connectivity: promise, issues, and interpretations}
+      \field{volume}{80}
+      \field{year}{2013}
+      \field{pages}{360\bibrangedash 378}
+      \range{pages}{19}
+    \endentry
+    \entry{li12}{article}{}
       \name{author}{7}{}{%
         {{uniquename=0,hash=2af761d9bef859ea29248418adce0dd7}{%
            family={Li},
@@ -74,15 +137,30 @@
       \field{pages}{427.e15\bibrangedash 427.e30}
       \range{pages}{-1}
     \endentry
-    \entry{suk}{inproceedings}{}
-      \name{author}{3}{}{%
-        {{uniquename=0,hash=472ce3789ff39b89f6227355647332f3}{%
-           family={Suk},
+    \entry{stackedDAE}{online}{}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelyear}{nodate}
+      \field{labeltitlesource}{title}
+      \field{title}{Stacked Autoencoders}
+      \verb{url}
+      \verb http://ufldl.stanford.edu/wiki/index.php/Stacked_Autoencoders
+      \endverb
+    \endentry
+    \entry{suk16}{article}{}
+      \name{author}{4}{}{%
+        {{uniquename=0,hash=c4553bc62183a8c6420ecbcda91417b3}{%
+           family={Suka},
            family_i={S\bibinitperiod},
            given={Heung-Il},
            given_i={H\bibinithyphendelim I\bibinitperiod}}}%
-        {{uniquename=0,hash=1a06d15430796bd2519e5e52a8af269f}{%
-           family={Lee},
+        {{uniquename=0,hash=588efa5eb771f2f8d4e9d223c257d4ed}{%
+           family={Weeb},
+           family_i={W\bibinitperiod},
+           given={Chong-Yaw},
+           given_i={C\bibinithyphendelim Y\bibinitperiod}}}%
+        {{uniquename=0,hash=f1293c73bd9cd90f387ec69568da4327}{%
+           family={Leea},
            family_i={L\bibinitperiod},
            given={Seong-Whan},
            given_i={S\bibinithyphendelim W\bibinitperiod}}}%
@@ -92,36 +170,61 @@
            given={Dinggang},
            given_i={D\bibinitperiod}}}%
       }
-      \list{publisher}{1}{%
-        {Springer International Publishing}%
-      }
-      \strng{namehash}{20350d42f48d479dd6e0915d07efcce4}
-      \strng{fullhash}{9880960e179743a4a79632137f631c9a}
+      \strng{namehash}{e3169fea19996229e78136ce5bb08734}
+      \strng{fullhash}{e214927fbf123cf19a0774a4b74cb1bc}
       \field{sortinit}{S}
       \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
-      \field{labelyear}{2015}
-      \field{labelmonth}{10}
+      \field{labelyear}{2016}
       \field{datelabelsource}{year}
       \true{uniqueprimaryauthor}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{booktitle}{International Conference on Medical Image Computing and Computer-Assisted Intervention}
-      \field{month}{10}
-      \field{title}{A hybrid of deep network and hidden markov model for MCI identification with resting-state fMRI}
+      \field{journaltitle}{Neuroimage}
+      \field{title}{State-space model with deep learning for functional dynamics estimation in resting-state fMRI}
+      \field{volume}{129}
+      \field{year}{2016}
+      \field{pages}{292\bibrangedash 307}
+      \range{pages}{16}
+    \endentry
+    \entry{wee15}{article}{}
+      \name{author}{4}{}{%
+        {{uniquename=0,hash=59ecc9997ddf0a2a8f2ed469ab4b9ca4}{%
+           family={Wee},
+           family_i={W\bibinitperiod},
+           given={Chong-Yaw},
+           given_i={C\bibinithyphendelim Y\bibinitperiod}}}%
+        {{uniquename=0,hash=21c61ad4ba652136307b6e8989535644}{%
+           family={Yang},
+           family_i={Y\bibinitperiod},
+           given={Sen},
+           given_i={S\bibinitperiod}}}%
+        {{uniquename=0,hash=b97a01ef9253fda170cb859e3263f3f3}{%
+           family={Yap},
+           family_i={Y\bibinitperiod},
+           given={Pew-Thian},
+           given_i={P\bibinithyphendelim T\bibinitperiod}}}%
+        {{uniquename=0,hash=4be3a7080769a01b5a9027ae92b8c440}{%
+           family={Shen},
+           family_i={S\bibinitperiod},
+           given={Dinggang},
+           given_i={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{13c1dd6fac58804dc40c19652e4fd468}
+      \strng{fullhash}{2a3e557981966a8c1c46905f5840b54a}
+      \field{sortinit}{W}
+      \field{sortinithash}{99e3ba1b3f78bb6f073e7fa7ac11636b}
+      \field{labelyear}{2015}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Brain Imaging and Behavior}
+      \field{title}{Temporally dynamic resting-state functional connectivity networks for early MCI identification}
       \field{year}{2015}
-      \field{pages}{573\bibrangedash 580}
-      \range{pages}{8}
+      \field{pages}{1\bibrangedash 15}
+      \range{pages}{15}
     \endentry
   \endsortlist
-  \missing{fowlkes1983method}
-  \missing{egan1979chunking}
-  \missing{chen}
-  \missing{oulasvirta2006surviving}
-  \missing{chase1973mind}
-  \missing{baddeley1986working}
-  \missing{ratner1986finding}
-  \missing{renew}
-  \missing{moss2006role}
 \endrefsection
 \endinput
 

@@ -1,27 +1,15 @@
-[0] Config.pm:343> INFO - This is Biber 2.5
+[1] Config.pm:343> INFO - This is Biber 2.5
 [1] Config.pm:346> INFO - Logfile is 'main.blg'
-[113] biber-darwin:290> INFO - === Thu Dec  8, 2016, 11:59:21
-[161] Biber.pm:351> INFO - Reading 'main.bcf'
-[442] Biber.pm:776> INFO - Found 12 citekeys in bib section 0
-[478] Biber.pm:3493> INFO - Processing section 0
-[520] Biber.pm:3657> INFO - Looking for bibtex format file 'refs.bib' for section 0
-[522] bibtex.pm:1187> INFO - Decoding LaTeX character macros into UTF-8
-[523] bibtex.pm:1048> INFO - Found BibTeX data source 'refs.bib'
-[536] Utils.pm:149> WARN - Name in key 'hutch' is empty (probably consecutive 'and'): skipping name
-[541] Utils.pm:149> WARN - BibTeX subsystem: substring 18, warning: empty substring
-[542] Utils.pm:149> WARN - I didn't find a database entry for 'chen' (section 0)
-[542] Utils.pm:149> WARN - I didn't find a database entry for 'egan1979chunking' (section 0)
-[543] Utils.pm:149> WARN - I didn't find a database entry for 'moss2006role' (section 0)
-[543] Utils.pm:149> WARN - I didn't find a database entry for 'renew' (section 0)
-[543] Utils.pm:149> WARN - I didn't find a database entry for 'chase1973mind' (section 0)
-[543] Utils.pm:149> WARN - I didn't find a database entry for 'baddeley1986working' (section 0)
-[544] Utils.pm:149> WARN - I didn't find a database entry for 'ratner1986finding' (section 0)
-[544] Utils.pm:149> WARN - I didn't find a database entry for 'fowlkes1983method' (section 0)
-[544] Utils.pm:149> WARN - I didn't find a database entry for 'oulasvirta2006surviving' (section 0)
-[593] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[593] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'variable = shifted' with 'variable = non-ignorable'
-[594] Biber.pm:3306> INFO - Sorting list 'nyt/global/' of type 'entry' with scheme 'nyt' and locale 'en-GB'
-[594] Biber.pm:3310> INFO - No sort tailoring available for locale 'en-GB'
-[603] bbl.pm:526> INFO - Writing 'main.bbl' with encoding 'UTF-8'
-[604] bbl.pm:619> INFO - Output to main.bbl
-[605] Biber.pm:108> INFO - WARNINGS: 11
+[148] biber-darwin:290> INFO - === Thu Dec  8, 2016, 16:41:58
+[246] Biber.pm:351> INFO - Reading 'main.bcf'
+[571] Biber.pm:776> INFO - Found 6 citekeys in bib section 0
+[610] Biber.pm:3493> INFO - Processing section 0
+[654] Biber.pm:3657> INFO - Looking for bibtex format file 'refs.bib' for section 0
+[657] bibtex.pm:1187> INFO - Decoding LaTeX character macros into UTF-8
+[658] bibtex.pm:1048> INFO - Found BibTeX data source 'refs.bib'
+[807] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[807] UCollate.pm:66> INFO - Overriding locale 'en-GB' defaults 'variable = shifted' with 'variable = non-ignorable'
+[808] Biber.pm:3306> INFO - Sorting list 'nyt/global/' of type 'entry' with scheme 'nyt' and locale 'en-GB'
+[808] Biber.pm:3310> INFO - No sort tailoring available for locale 'en-GB'
+[826] bbl.pm:526> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[829] bbl.pm:619> INFO - Output to main.bbl
