@@ -1,3 +1,6 @@
-\section{Implementation of this Project}
+\section{Future Work}
+
+Currently identical-sized sub-series data is used in the RNN classifiers. In the future, it could be replaced by the more generalized overlapping sliding window data .Compared to current solution, sliding window setting could generate richer data. Since there are 2 hyper-parameters, sliding window size and stride size, that could potentially be related to the classification performance \cite{wee15}, we can tune it by experimenting reasonable combinations of the two parameters. After obtaining more training data, we can improving our RNN traning by tring more sophisticated model such as LSTM. In terms of ensemble learning, there are much room for us to improvement. E.g. In the application of ensemble learning for AD diagnosis, \textcite{liu14} employ a greedy approach to select high-level classifiers. \cite{shi17} trains a stacked DAE by combining  sparse autoencoder and denoising auto-encode, which also can be one of our potential DAE solutions. 
+
 
 

@@ -20,11 +20,3 @@
  
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
-[H!]
-    \centering
-    \includegraphics[width=0.9\textwidth]{rnn.png}
-    \caption{Recurrent Neural Networks}
-    \label{fig:awesome_image}
-\end{figure*}
-\efloatseparator
- 

@@ -18,7 +18,7 @@ $ F^{(n)} \in \{ \emph{F} | \emph{F} = \left[ \textbf{f}_1, \cdots, \textbf{f}_t
 \end{center}
 where $N=228$ is number of the scans, $R=120$ is the number of  ROIs, and $T=135$ is the length of a time series. 
 
-\subsection{Dimensionality Reduction with DAE}
+\subsection{Dimension Reduction with DAE}
 
 \begin{figure}[H!]
     \centering
@@ -46,16 +46,16 @@ A stacked autoencoder (Figure 2) is composed of multiple layers of autoencoders,
 
 After training, only the first part of the DAE (i.e. from input layer to bottleneck hidden layer) is used to transform each $\textbf{f}_t \in  \mathbb{R}^{R}$ into $ \textbf{x}_t \in  \mathbb{R}^{r}$, where $ r < R$. As a result, the encoded representation of a scan becomes
 \begin{center}
-$\emph{X} = \left[ \textbf{x}_1, \cdots, \textbf{x}_t, \cdots, \textbf{x}_T \right]$ 
+$\emph{X} = \left[ \textbf{x}_1, \cdots, \textbf{x}_t, \cdots, \textbf{x}_T \right].$ 
 \end{center}
-to fed into the classification model to come. 
 
 \subsection{High-level RNN classifiers and their ensemble for subject diagnosis}
 
-\textcite{wee15} proposed a framework for brain functional connectivity analysis, in which each time series of each scan are decomposed into multiple overlapping sub-series by a sliding window. Justified by their work, a encoded time-series is splitted into identical-sized sub-series
+\textcite{wee15} proposes a framework for brain functional connectivity analysis, in which the time series of a scan are decomposed into multiple overlapping sub-series by a sliding window. Justified by their work, a encoded time-series is splitted into identical-sized sub-series
 \begin{center}
 $\emph{X} = \left[ \textbf{x}_1, \cdots, \textbf{x}_s, \cdots, \textbf{x}_{S} \right]$, where $T=n*S, n$ is an integer. 
 \end{center}
+
 A RNN is a specialized class of neural network that is suitable for dynamic temporal sequences. Connections between units in a RNN form a directed cycle. For each unit, hidden nodes are created as internal memory to process sequences of inputs, which enables RNN to condition the model on all previous units in a sequence (Figure 3). Below are the formulas in the network.
 
 \begin{center}
@@ -65,7 +65,7 @@ $S_k = \sigma(W^{(rec)}S_{k-1} + W^{x}x_k )$
 $y = softmax(W^{(s)}S_k)$
 \end{center}
 
-The detailed notation is explained below:
+The detailed notations are explained below:
 \begin{easylist}
 \ListProperties(Hide=100, Hang=true, Progressive=3ex, Style*=-- )
 @ $ \textbf{x}_k \in  \mathbb{R}^{r}, k=1, \cdots , n$: the input of a unit
@@ -77,7 +77,7 @@ The detailed notation is explained below:
 @ $W^{(s)}$: weight matrix that transform $S_k$ to $y$
 \end{easylist}
 
-\begin{figure}[H!]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.9\textwidth]{rnn.png}
     \caption{Recurrent Neural Networks}

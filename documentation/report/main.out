@@ -2,8 +2,7 @@
 \BOOKMARK [1][-]{section*.2}{Introduction}{}% 2
 \BOOKMARK [1][-]{section*.3}{Problem Definition and Algorithm}{}% 3
 \BOOKMARK [2][-]{section*.4}{Data set and Preprocessing}{section*.3}% 4
-\BOOKMARK [2][-]{section*.5}{Dimensionality Reduction with DAE}{section*.3}% 5
+\BOOKMARK [2][-]{section*.5}{Dimension Reduction with DAE}{section*.3}% 5
 \BOOKMARK [2][-]{section*.6}{High-level RNN classifiers and their ensemble for subject diagnosis}{section*.3}% 6
-\BOOKMARK [1][-]{section*.7}{Study 1}{}% 7
-\BOOKMARK [1][-]{section*.8}{Study 2}{}% 8
-\BOOKMARK [1][-]{section*.9}{Implementation of this Project}{}% 9
+\BOOKMARK [1][-]{section*.7}{Experimental Evaluation}{}% 7
+\BOOKMARK [1][-]{section*.8}{Related Work}{}% 8

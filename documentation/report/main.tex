@@ -15,6 +15,8 @@
  \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage[absolute]{textpos}
+\usepackage{afterpage}
 \usepackage[
     style=apa,
     backend=biber,
@@ -30,7 +32,7 @@
 ]{biblatex}
 
 \graphicspath{ {./figures/} }
-
+\floatplacement{figure}{H}
 \DeclareLanguageMapping{british}{british-apa}
 
 % maps apacite commands to biblatex commands

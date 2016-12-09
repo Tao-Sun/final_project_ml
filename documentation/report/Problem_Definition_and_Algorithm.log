@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  8 DEC 2016 18:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  9 DEC 2016 00:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -888,7 +888,7 @@ Overfull \hbox (15.00005pt too wide) in paragraph at lines 19--20
 
 ! Undefined control sequence.
 l.21 \subsection
-                {Dimensionality Reduction with DAE}
+                {Dimension Reduction with DAE}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -904,11 +904,6 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no y in font nullfont!
 Missing character: There is no R in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no d in font nullfont!
@@ -2326,50 +2321,12 @@ Overfull \hbox (17.9888pt too wide) in paragraph at lines 49--50
  []
 
 
-Overfull \hbox (82.51456pt too wide) in paragraph at lines 49--50
- []$ 
+Overfull \hbox (86.95897pt too wide) in paragraph at lines 49--50
+ [] \OML/cmm/m/it/10 :$ 
  []
 
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no f in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no d in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no h in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no f in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no m in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no d in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no m in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
-l.53 \subsection
+l.52 \subsection
                 {High-level RNN classifiers and their ensemble for subject d...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -2437,13 +2394,13 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 53--54
+Overfull \hbox (20.0pt too wide) in paragraph at lines 52--53
 []
  []
 
 ! Undefined control sequence.
-l.55 \textcite
-              {wee15} proposed a framework for brain functional connectivity...
+l.54 \textcite
+              {wee15} proposes a framework for brain functional connectivity...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -2462,7 +2419,7 @@ Missing character: There is no p in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no e in font nullfont!
-Missing character: There is no d in font nullfont!
+Missing character: There is no s in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no f in font nullfont!
 Missing character: There is no r in font nullfont!
@@ -2519,10 +2476,9 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no c in font nullfont!
 Missing character: There is no h in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no c in font nullfont!
+Missing character: There is no t in font nullfont!
 Missing character: There is no h in font nullfont!
+Missing character: There is no e in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no m in font nullfont!
@@ -2535,10 +2491,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no f in font nullfont!
-Missing character: There is no e in font nullfont!
 Missing character: There is no a in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no h in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no c in font nullfont!
 Missing character: There is no a in font nullfont!
@@ -2686,7 +2639,7 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 55--56
+Overfull \hbox (20.0pt too wide) in paragraph at lines 54--55
 []
  []
 
@@ -2709,27 +2662,27 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no r in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (17.9888pt too wide) in paragraph at lines 57--58
+Overfull \hbox (17.9888pt too wide) in paragraph at lines 56--57
  [] \OT1/cmr/m/n/10 = 
  []
 
 
-Overfull \hbox (82.76146pt too wide) in paragraph at lines 57--58
+Overfull \hbox (82.76146pt too wide) in paragraph at lines 56--57
  []$ 
  []
 
 
-Overfull \hbox (17.78816pt too wide) in paragraph at lines 57--58
+Overfull \hbox (17.78816pt too wide) in paragraph at lines 56--57
  \OML/cmm/m/it/10 T \OT1/cmr/m/n/10 = 
  []
 
 
-Overfull \hbox (11.00237pt too wide) in paragraph at lines 57--58
+Overfull \hbox (11.00237pt too wide) in paragraph at lines 56--57
  \OML/cmm/m/it/10 n \OMS/cmsy/m/n/10 ^^C 
  []
 
 
-Overfull \hbox (16.59952pt too wide) in paragraph at lines 57--58
+Overfull \hbox (16.59952pt too wide) in paragraph at lines 56--57
  \OML/cmm/m/it/10 S; n$ 
  []
 
@@ -3043,6 +2996,11 @@ Missing character: There is no r in font nullfont!
 Missing character: There is no k in font nullfont!
 Missing character: There is no . in font nullfont!
 
+Overfull \hbox (20.0pt too wide) in paragraph at lines 59--60
+[]
+ []
+
+
 Overfull \hbox (20.0pt too wide) in paragraph at lines 61--61
 [] 
  []
@@ -3093,8 +3051,10 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
-Missing character: There is no i in font nullfont!
 Missing character: There is no s in font nullfont!
+Missing character: There is no a in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no e in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no x in font nullfont!
 Missing character: There is no p in font nullfont!
@@ -3506,18 +3466,21 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.80 \begin{figure}
-                   [H!]
+l.81 \begin{figure}
+                   [!htbp]
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 Missing character: There is no [ in font nullfont!
-Missing character: There is no H in font nullfont!
 Missing character: There is no ! in font nullfont!
+Missing character: There is no h in font nullfont!
+Missing character: There is no t in font nullfont!
+Missing character: There is no b in font nullfont!
+Missing character: There is no p in font nullfont!
 Missing character: There is no ] in font nullfont!
 ! Undefined control sequence.
-l.82     \includegraphics
+l.83     \includegraphics
                          [width=0.9\textwidth]{rnn.png}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -3538,7 +3501,7 @@ Missing character: There is no 9 in font nullfont!
 ! Missing number, treated as zero.
 <to be read again> 
                    ]
-l.82     \includegraphics[width=0.9\textwidth]
+l.83     \includegraphics[width=0.9\textwidth]
                                               {rnn.png}
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
@@ -3547,7 +3510,7 @@ look up `weird error' in the index to The TeXbook.)
 ! Illegal unit of measure (pt inserted).
 <to be read again> 
                    ]
-l.82     \includegraphics[width=0.9\textwidth]
+l.83     \includegraphics[width=0.9\textwidth]
                                               {rnn.png}
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -3571,7 +3534,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.83     \caption
+l.84     \caption
                  {Recurrent Neural Networks}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -3606,17 +3569,69 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.85 \end{figure}
+l.86 \end{figure}
                  
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 80--86
+Overfull \hbox (20.0pt too wide) in paragraph at lines 81--87
 []
  []
 
+
+! LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.88 \clearpage
+               
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+! Undefined control sequence.
+<write> \newlabel{fig:awesome_image}{{}{\thepage 
+                                                 }}
+l.88 \clearpage
+               
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+\newlabel{fig:awesome_image}{{}{}}
+! Undefined control sequence.
+<write> \newlabel{fig:awesome_image}{{}{\thepage 
+                                                 }}
+l.88 \clearpage
+               
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+\newlabel{fig:awesome_image}{{}{}}
+! Undefined control sequence.
+<write> \newlabel{fig:awesome_image}{{}{\thepage 
+                                                 }}
+l.88 \clearpage
+               
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+\newlabel{fig:awesome_image}{{}{}}
+]
 Missing character: There is no I in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no t in font nullfont!
@@ -3993,8 +4008,8 @@ Missing character: There is no . in font nullfont!
 
  
 Here is how much of TeX's memory you used:
- 20 strings out of 493014
- 370 string characters out of 6133351
+ 22 strings out of 493014
+ 416 string characters out of 6133351
  59601 words of memory out of 5000000
  3661 multiletter control sequences out of 15000+600000
  4294 words of font info for 16 fonts, out of 8000000 for 9000

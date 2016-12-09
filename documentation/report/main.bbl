@@ -58,16 +58,149 @@
       \field{pages}{537\bibrangedash 541}
       \range{pages}{5}
     \endentry
+    \entry{eavani13}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{uniquename=0,hash=c4bd90dfe2fbeec5e1f16635efe4c2be}{%
+           family={Eavani},
+           family_i={E\bibinitperiod},
+           given={Harini},
+           given_i={H\bibinitperiod}}}%
+        {{uniquename=0,hash=967aff126fdf31ee5ee57d2cc3966c57}{%
+           family={Satterthwaite},
+           family_i={S\bibinitperiod},
+           given={Theodore\bibnamedelima D.},
+           given_i={T\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{uniquename=0,hash=824fa3b9db57266807aef6bd373e6de7}{%
+           family={Gur},
+           family_i={G\bibinitperiod},
+           given={Raquel\bibnamedelima E.},
+           given_i={R\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+        {{uniquename=0,hash=7974a8c91cd6969613c0dbcca9551141}{%
+           family={Gur},
+           family_i={G\bibinitperiod},
+           given={Ruben\bibnamedelima C.},
+           given_i={R\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{uniquename=0,hash=9b3e5f4bb3bd53806daf0873ab42c7b7}{%
+           family={Davatzikos},
+           family_i={D\bibinitperiod},
+           given={Christos},
+           given_i={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Berlin Heidelberg}%
+      }
+      \strng{namehash}{feda341bb31e909a8a2490c31ece8e85}
+      \strng{fullhash}{39a792738c243593dc2c6074605671f1}
+      \field{sortinit}{E}
+      \field{sortinithash}{fefc5210ef4721525b2a478df41efcd4}
+      \field{labelyear}{2013}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Conference on Information Processing in Medical Imaging}
+      \field{title}{Unsupervised learning of functional network dynamics in resting state fMRI}
+      \field{year}{2013}
+      \field{pages}{426\bibrangedash 437}
+      \range{pages}{12}
+    \endentry
     \entry{hutch13}{article}{}
-      \name{author}{1}{}{%
+      \name{author}{18}{}{%
         {{uniquename=0,hash=9e6a8073b663e79c7700af7591ab52a4}{%
            family={Hutchison},
            family_i={H\bibinitperiod},
            given={R.\bibnamedelimi Matthew},
            given_i={R\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{uniquename=0,hash=08c67c6846ffb947c38bfaee9d1f4fca}{%
+           family={Womelsdorf},
+           family_i={W\bibinitperiod},
+           given={Thilo},
+           given_i={T\bibinitperiod}}}%
+        {{uniquename=0,hash=c9b2c6c51dbe50037e59735f29a62c88}{%
+           family={Allen},
+           family_i={A\bibinitperiod},
+           given={Elena\bibnamedelima A.},
+           given_i={E\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{uniquename=0,hash=1725d8c94e7ac71ddb8a8e6e898bc190}{%
+           family={Bandettini},
+           family_i={B\bibinitperiod},
+           given={Peter\bibnamedelima A.},
+           given_i={P\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{uniquename=0,hash=a481e9bb4df4d71178c0f489b8327790}{%
+           family={Calhoun},
+           family_i={C\bibinitperiod},
+           given={Vince\bibnamedelima D.},
+           given_i={V\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{uniquename=0,hash=aff57f0fe699f4a7d1dfa3b15a4c347b}{%
+           family={Corbetta},
+           family_i={C\bibinitperiod},
+           given={Maurizio},
+           given_i={M\bibinitperiod}}}%
+        {{uniquename=0,hash=e2e7329c2bc48af9a4d006f3fc6d6c02}{%
+           family={Penna},
+           family_i={P\bibinitperiod},
+           given={Stefania\bibnamedelima Della},
+           given_i={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{uniquename=0,hash=5d844795bb77f58df179add3a8b58022}{%
+           family={Duyn},
+           family_i={D\bibinitperiod},
+           given={Jeff\bibnamedelima H.},
+           given_i={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{uniquename=0,hash=60c00b556ee60f0706b12883b75bdba6}{%
+           family={Glover},
+           family_i={G\bibinitperiod},
+           given={Gary\bibnamedelima H.},
+           given_i={G\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{uniquename=0,hash=f4a75ef1a70a3fbbb4ac1a5894013084}{%
+           family={Gonzalez-Castillo},
+           family_i={G\bibinithyphendelim C\bibinitperiod},
+           given={Javier},
+           given_i={J\bibinitperiod}}}%
+        {{uniquename=0,hash=17e74d4c90d89a0b2be70346199ff769}{%
+           family={Handwerker},
+           family_i={H\bibinitperiod},
+           given={Daniel\bibnamedelima A.},
+           given_i={D\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{uniquename=0,hash=1fdc745b4b5e9accf76416b83c8a04cc}{%
+           family={Keilholz},
+           family_i={K\bibinitperiod},
+           given={Shella},
+           given_i={S\bibinitperiod}}}%
+        {{uniquename=0,hash=d9cac7ddb767b77a24e4832c172aa989}{%
+           family={Kiviniemi},
+           family_i={K\bibinitperiod},
+           given={Vesa},
+           given_i={V\bibinitperiod}}}%
+        {{uniquename=0,hash=fc6229323ef3015da349384f30283b0a}{%
+           family={Leopold},
+           family_i={L\bibinitperiod},
+           given={David\bibnamedelima A.},
+           given_i={D\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{uniquename=0,hash=f1a16ac0573172af940bf95bf491fae2}{%
+           prefix={de},
+           prefix_i={d\bibinitperiod},
+           family={Pasquale},
+           family_i={P\bibinitperiod},
+           given={Francesco},
+           given_i={F\bibinitperiod}}}%
+        {{uniquename=0,hash=45ad603551aca6e1246f0e73c18c6eed}{%
+           family={Sporns},
+           family_i={S\bibinitperiod},
+           given={Olaf},
+           given_i={O\bibinitperiod}}}%
+        {{uniquename=0,hash=8ef209a047d808d53354cdbf7b1abb95}{%
+           family={Walter},
+           family_i={W\bibinitperiod},
+           given={Martin},
+           given_i={M\bibinitperiod}}}%
+        {{uniquename=0,hash=0fe10cfb5cef1a7aa911f775ca9a5e9b}{%
+           family={Chang},
+           family_i={C\bibinitperiod},
+           given={Catie},
+           given_i={C\bibinitperiod}}}%
       }
-      \strng{namehash}{9e6a8073b663e79c7700af7591ab52a4}
-      \strng{fullhash}{9e6a8073b663e79c7700af7591ab52a4}
+      \strng{namehash}{c4f8139d1eaa2c57acc67393377c136e}
+      \strng{fullhash}{612f679afed828ab4aac1ffcc4feaea9}
       \field{sortinit}{H}
       \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
       \field{labelyear}{2013}
@@ -137,6 +270,85 @@
       \field{pages}{427.e15\bibrangedash 427.e30}
       \range{pages}{-1}
     \endentry
+    \entry{liu14}{article}{}
+      \name{author}{3}{}{%
+        {{uniquename=0,hash=ea9437ac39b633c586000df33527f44e}{%
+           family={Liu},
+           family_i={L\bibinitperiod},
+           given={Manhua},
+           given_i={M\bibinitperiod}}}%
+        {{uniquename=0,hash=83e7a80de304bbfeb42ffacec292a009}{%
+           family={Zhang},
+           family_i={Z\bibinitperiod},
+           given={Daoqiang},
+           given_i={D\bibinitperiod}}}%
+        {{uniquename=0,hash=4be3a7080769a01b5a9027ae92b8c440}{%
+           family={Shen},
+           family_i={S\bibinitperiod},
+           given={Dinggang},
+           given_i={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a86ec5d325c4c4120d012e6dcc6e109}
+      \strng{fullhash}{1588358869bd7595ef227530e7a4c2d3}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelyear}{2014}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Human Brain Mapping}
+      \field{number}{4}
+      \field{title}{Hierarchical fusion of features and classifier decisions for Alzheimer's disease diagnosis}
+      \field{volume}{35}
+      \field{year}{2014}
+      \field{pages}{1305\bibrangedash 1319}
+      \range{pages}{15}
+    \endentry
+    \entry{shi17}{article}{}
+      \name{author}{5}{}{%
+        {{uniquename=0,hash=34347055f614fc349a706311a3a05f3e}{%
+           family={Shi},
+           family_i={S\bibinitperiod},
+           given={Bibo},
+           given_i={B\bibinitperiod}}}%
+        {{uniquename=0,hash=d1be1d74d724c7ce4d8c2d2b9ad61155}{%
+           family={Chen},
+           family_i={C\bibinitperiod},
+           given={Yani},
+           given_i={Y\bibinitperiod}}}%
+        {{uniquename=0,hash=bdc8ddf3308282dd254c42506f4e77a7}{%
+           family={Zhang},
+           family_i={Z\bibinitperiod},
+           given={Pin},
+           given_i={P\bibinitperiod}}}%
+        {{uniquename=0,hash=1a620475921ce3eea6ea1fa4ae38e2bf}{%
+           family={Smith},
+           family_i={S\bibinitperiod},
+           given={Charles\bibnamedelima D.},
+           given_i={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{uniquename=0,hash=cbe9fa1eea91d289bbae9f614d60d33c}{%
+           family={Liu},
+           family_i={L\bibinitperiod},
+           given={Jundong},
+           given_i={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{0b5cd9b8cb8a44851288143fcb444eab}
+      \strng{fullhash}{dd9bd478ec392b4ffb07bdd7d02dc75c}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelyear}{2017}
+      \field{datelabelsource}{year}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Pattern Recognition}
+      \field{title}{Nonlinear feature transformation and deep fusion for Alzheimer's Disease staging analysis}
+      \field{volume}{63}
+      \field{year}{2017}
+      \field{pages}{487\bibrangedash 498}
+      \range{pages}{12}
+    \endentry
     \entry{stackedDAE}{online}{}
       \field{sortinit}{S}
       \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
@@ -149,8 +361,8 @@
     \endentry
     \entry{suk16}{article}{}
       \name{author}{4}{}{%
-        {{uniquename=0,hash=c4553bc62183a8c6420ecbcda91417b3}{%
-           family={Suka},
+        {{uniquename=0,hash=472ce3789ff39b89f6227355647332f3}{%
+           family={Suk},
            family_i={S\bibinitperiod},
            given={Heung-Il},
            given_i={H\bibinithyphendelim I\bibinitperiod}}}%
@@ -170,8 +382,8 @@
            given={Dinggang},
            given_i={D\bibinitperiod}}}%
       }
-      \strng{namehash}{e3169fea19996229e78136ce5bb08734}
-      \strng{fullhash}{e214927fbf123cf19a0774a4b74cb1bc}
+      \strng{namehash}{20350d42f48d479dd6e0915d07efcce4}
+      \strng{fullhash}{76b0b1e6268d4de83037c052d652aae3}
       \field{sortinit}{S}
       \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
       \field{labelyear}{2016}
