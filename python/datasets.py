@@ -1,16 +1,12 @@
-import numpy as np
 import collections
+
+import numpy as np
+
 
 Datasets = collections.namedtuple('Datasets', ['train', 'validation', 'test'])
 
 class Dataset(object):
     def __init__(self, examples, labels):
-        """Construct a DataSet.
-        one_hot arg is used only if fake_data is true.  `dtype` can be either
-            `uint8` to leave the input as `[0, 255]`, or `float32` to rescale into
-        `[0, 1]`.
-        """
-        #assert images.shape[0] == labels.shape[0]
         self._num_examples = examples.shape[0]
         self._examples = examples
         self._labels = labels
@@ -34,7 +30,7 @@ class Dataset(object):
         return self._epochs_completed
 
     def next_batch_samples(self, batch_size):
-        """Return the next `batch_size` examples from this data set."""
+        """Return the next `batch_size` examples from this data set without labels."""
     
         start = self._index_in_epoch
         self._index_in_epoch += batch_size
@@ -55,7 +51,7 @@ class Dataset(object):
         return self._examples[start:end]
     
     def next_batch_examples(self, batch_size, shuffle=True):
-        """Return the next `batch_size` examples from this data set."""
+        """Return the next `batch_size` examples from this data set with labels."""
     
         start = self._index_in_epoch
         self._index_in_epoch += batch_size

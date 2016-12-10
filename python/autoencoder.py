@@ -1,8 +1,22 @@
-import tensorflow as tf
-from pygame.midi import Output
-import math
-import copy
+"""Builds the autoencoder network.
 
+Implements the inference/loss/training pattern for model building.
+
+1. inference() - Builds the model as far as is required for running the autoencoder
+reconstruct the inputs.
+2. loss() - Adds to the inference model the layers required to generate loss.
+3. training() - Adds to the loss model the Ops required to optimize the model.
+
+This file is used by the "autoencoder_feed.py" file and not meant to
+be run.
+"""
+
+import copy
+import math
+
+from pygame.midi import Output
+
+import tensorflow as tf
 
 
 class Autoencoder:
@@ -15,8 +29,16 @@ class Autoencoder:
         
     def inference(self, inputs, reconstruct=True):
         """
-        Build the autoencoder model up to where it may be used for inference
+        Build the autoencoder model up to where it may be used for reconstructing inputs.
+        
+        Args:
+            inputs: time points placeholder, [batch_size, ROI_num]
+            reconstruct: Whether to reconstruct the inputs or just encode the inputs
+                         to a lower dimension.
+            
+        Returns: Reconstructed inputs or encoded inputs.
         """
+        
         layer_input = inputs
         
         self.sizes.reverse()
@@ -24,7 +46,7 @@ class Autoencoder:
         self.sizes.reverse()
         
         output_sizes = self.sizes+reverse_sizes[1:]+[int(inputs.get_shape()[1])]
-        print output_sizes
+        print "Layers configuration: " + str(output_sizes)
         
         for i, output_size in enumerate(output_sizes):
             input_size = int(layer_input.get_shape()[1])
@@ -44,20 +66,50 @@ class Autoencoder:
         return reconstruct_inputs
     
     def loss(self, reconstructed_inputs, inputs):
+        """Calculates mean squared difference betwen reconstructed_inputs and inputs of the batch.
+        
+        Args:
+          reconstructed_inputs: reconstructed inputs from autoencoder, float - [batch_size, ROI_num].
+          inputs: inputs of the autoencoder, float - [batch_size, ROI_num].
+          
+        Returns:
+          loss: Loss tensor of type float.
+        """
         loss = tf.reduce_mean(tf.square(inputs-reconstructed_inputs))
-        #loss = tf.square(inputs-reconstructed_inputs)
         return loss
     
     def train(self, loss, learning_rate):
-        # Create the gradient descent optimizer with the given learning rate.
-        #optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+        """Sets up the training Ops.
+        
+        Creates an Adadelta optimizer.
+        
+        The Op returned by this function is what must be passed to the
+        `sess.run()` call to cause the model to train.
+        
+        Args:
+          loss: Loss tensor, from loss().
+          learning_rate: The learning rate to use for the optimizer.
+          
+        Returns:
+          train_op: The Op for training.
+        """
+        
         optimizer = tf.train.AdadeltaOptimizer(learning_rate)
         # Create a variable to track the global step.
         global_step = tf.Variable(0, name='global_step', trainable=False)
-        # Use the optimizer to apply the gradients that minimize the loss    
+        
         train_op = optimizer.minimize(loss, global_step=global_step)
         return train_op
     
     def evaluation(self, encoded_inputs, inputs):
+        """For evaluation purpose of the model; just return loss of the batch.
+        
+        Args:
+          reconstructed_inputs: reconstructed inputs from autoencoder, float - [batch_size, ROI_num].
+          inputs: inputs of the autoencoder, float - [batch_size, ROI_num].
+          
+        Returns:
+          loss: Loss tensor of type float.
+        """
         return self.loss(encoded_inputs, inputs)
 

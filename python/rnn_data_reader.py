@@ -1,18 +1,21 @@
-import numpy as np
 from datasets import Dataset, Datasets
+import numpy as np
+
+PREPROCESSED_SERIES_LENGTH = 135
 
 def normalize(X_n, time_steps):
     X_n = X_n/(np.linalg.norm(X_n, axis=1).reshape((time_steps, 1)))
     return X_n
 
-def extract_subject_examples(file):
-    """Extract the images into a 4D uint8 numpy array [index, y, x, depth].
+def extract_subject_examples(file, series_length):
+    """Extract the scans into a 3D numpy array [index, time_point, ROI_index].
+    
     Args:
-     f: A file object that can be passed into a gzip reader.
+     f: A file object.
+     series_length: length of a series
+     
     Returns:
-     data: A 4D unit8 numpy array [index, y, x, depth].
-    Raises:
-     ValueError: If the bytestream does not start with 2051.
+     data: A 3D numpy array [index, time_point, ROI_index].
     """
     print('Extracting', file.name)
     X = []
@@ -24,8 +27,7 @@ def extract_subject_examples(file):
            X_n = []
        elif line != '\n':
            attributes = line.strip().split(",")
-           assert len(attributes) == 136
-           X_n_row = [np.float64(attribute) for attribute in attributes[15:135]]
+           X_n_row = [np.float64(attribute) for attribute in attributes[PREPROCESSED_SERIES_LENGTH-series_length:PREPROCESSED_SERIES_LENGTH]]
            X_n.append(X_n_row)
     
     examples = np.array(X)
@@ -47,20 +49,20 @@ def split_subject_examples(subject_examples, time_steps, normalized=True):
     
     return X
 
-def split_subject_labels(subject_labels, time_steps):
+def split_subject_labels(subject_labels, series_length, time_steps):
     labels = []
-    expanded_coeff = 120/time_steps
+    expanded_coeff = series_length/time_steps
     for line in subject_labels:
         expanded_line_labels = [line] * expanded_coeff
         labels = np.concatenate((labels, expanded_line_labels))
     
     return labels
 
-def get_data_set(examples, labels, start, end, time_steps, shuffle=False):
+def get_data_set(examples, labels, start, end, series_length, time_steps, shuffle=False):
     dataset_examples = examples[start:end]
     dataset_labels = labels[start:end]
     dataset_examples = split_subject_examples(dataset_examples, time_steps)
-    dataset_labels = split_subject_labels(dataset_labels, time_steps)
+    dataset_labels = split_subject_labels(dataset_labels, series_length, time_steps)
     assert dataset_examples.shape[0] == dataset_labels.shape[0]
     if shuffle:
         num_dataset_examples = dataset_examples.shape[0]
@@ -72,10 +74,13 @@ def get_data_set(examples, labels, start, end, time_steps, shuffle=False):
     dataset = Dataset(dataset_examples, dataset_labels)
     return dataset
 
-def read_data_sets(data_dir, time_steps, shuffle=True):
+def read_data_sets(data_dir, series_length, time_steps, shuffle=True):
+    """
+    Set up train, validation and test data.
+    """
     
     with open(data_dir + '/encoded_samples.txt', 'r') as f:
-        subject_examples = extract_subject_examples(f)
+        subject_examples = extract_subject_examples(f, series_length)
     with open(data_dir + '/encoded_labels.txt', 'r') as f:
         subject_labels = []
         for line in f:
@@ -94,18 +99,21 @@ def read_data_sets(data_dir, time_steps, shuffle=True):
     train = get_data_set(subject_examples, 
                          subject_labels, 
                          0, 
-                         int(0.7*num_subjects), 
+                         int(0.7*num_subjects),
+                         series_length,
                          time_steps, 
                          shuffle)
     test =  get_data_set(subject_examples, 
                          subject_labels, 
                          int(0.7*num_subjects), 
-                         num_subjects, 
+                         num_subjects,
+                         series_length,
                          time_steps)
     validation = get_data_set(subject_examples, 
                               subject_labels, 
                               0, 
                               int(0.7*num_subjects), 
+                              series_length,
                               time_steps)
     
     return Datasets(train=train, test=test, validation=validation)

@@ -1,17 +1,27 @@
-import math
-import tensorflow as tf
+"""Builds the RNN graph.
 
+Implements the cell_inference/inference/loss/training pattern for model building.
+
+1. cell_inference() - Builds the model as far as is required for running the cell inference.
+2. inference() - Builds the model as far as is required for running the network 
+forward to make predictions.
+2. loss() - Adds to the inference model the layers required to generate loss.
+3. training() - Adds to the loss model the Ops required to optimize the model.
+
+This file is used by the "rnn_feed.py" file and not meant to be run.
+"""
+
+import math
+
+from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import math_ops
+from tensorflow.python.ops import nn_ops
+from tensorflow.python.ops import variable_scope
 from tensorflow.python.ops.math_ops import sigmoid
 from tensorflow.python.ops.math_ops import tanh
-from tensorflow.python.ops import variable_scope
-from tensorflow.python.ops import array_ops
-from tensorflow.python.ops import nn_ops
 
+import tensorflow as tf
 
-flags = tf.flags
-flags.DEFINE_string("data_path", None, "data_path")
-FLAGS = flags.FLAGS
 
 class RNN(object):
     
@@ -21,7 +31,18 @@ class RNN(object):
         self._label_size = label_size
         self._activation = activation
     
-    def cell_inference(self, cell_inputs, previous_state, scope=None, dropout=False):
+    def cell_inference(self, cell_inputs, previous_state, dropout=False, scope=None):
+        """
+        Build the rnn model up to where it may be used for cell inference.
+        
+        Args:
+            cell_inputs: time points placeholder, [batch_size, compressed_ROI_num]
+            previous_state: tensor of previous state, [batch_size, state_size]
+            dropout: drop out probability. Do not drop out if it is empty.
+            
+        Returns: cells logits.
+        """
+        
         with variable_scope.variable_scope(scope or type(self).__name__):            
             state_weights = tf.get_variable("state_weights", \
                                             shape=[self._state_size, self._state_size])
@@ -61,6 +82,17 @@ class RNN(object):
         return cell_states, cell_outputs
     
     def reference(self, inputs, dropout=False):
+        """
+        Build the rnn model up to where it may be used for running the network 
+        forward to make predictions.
+        
+        Args:
+            inputs: time points placeholder, [batch_size, compressed_ROI_num]
+            dropout: drop out probability. Do not drop out if it is empty.
+            
+        Returns: logits of last unit.
+        """
+        
         logits = []
         batch_size = inputs.get_shape()[0]
         time_steps = inputs.get_shape()[1] 
@@ -73,34 +105,53 @@ class RNN(object):
             logits.append(cell_outputs)
             previous_states = cell_states
 
-        return logits
+        return logits[-1]
     
-    def loss(self, logits, targets):
-        time_steps = len(logits)
-        
-        crossents = []
-        for time_step in range(time_steps):
-            logit = logits[time_step]
-            target = targets[time_step]
-            crossent = nn_ops.sparse_softmax_cross_entropy_with_logits(
-                logit, target)
-            crossents.append(crossent)
-          
-        loss = tf.reduce_mean(math_ops.add_n(crossents))
-#         loss = tf.reduce_mean(nn_ops.sparse_softmax_cross_entropy_with_logits(
-#             logits[-1], targets))
-        return loss
+#     def loss(self, logits, targets):
+#         """Calculates mean of cross entropy loss of each unit in a sequence.
+#         
+#         Args:
+#           logits: logits from inference(), float - [time_steps, batch_size, label_size].
+#           targets: inputs of the autoencoder, float - [time_steps, batch_size].
+#           
+#         Returns:
+#           loss: Loss tensor of type float.
+#         """
+#         
+#         time_steps = len(logits)
+#         
+#         crossents = []
+#         for time_step in range(time_steps):
+#             logit = logits[time_step]
+#             target = targets[time_step]
+#             crossent = nn_ops.sparse_softmax_cross_entropy_with_logits(
+#                 logit, target)
+#             crossents.append(crossent)
+#           
+#         loss = tf.reduce_mean(math_ops.add_n(crossents))
+#         return loss
     
     def simple_loss(self, logits, targets, lamda=0.05):
+        """Calculates cross entropy loss of last unit in a sequence with L2 regularization.
+        
+        Args:
+          logits: logits from inference(), float - [batch_size, label_size].
+          targets: inputs of the autoencoder, float - [batch_size].
+          
+        Returns:
+          loss: Loss tensor of type float.
+        """
+        
         state_weights = tf.get_variable("state_weights", shape=[self._state_size, self._state_size])
         input_weights = tf.get_variable("input_weights", shape=[self._input_size, self._state_size])
         output_weights = tf.get_variable("output_weight", shape=[self._state_size, self._label_size])
+        
         b = tf.get_variable("b", shape=[self._state_size])
         c = tf.get_variable("c", shape=[self._label_size])
         
                                         
         loss = tf.reduce_mean(nn_ops.sparse_softmax_cross_entropy_with_logits(
-            logits[-1], targets)) + lamda * tf.nn.l2_loss(state_weights) + \
+            logits, targets)) + lamda * tf.nn.l2_loss(state_weights) + \
             lamda * tf.nn.l2_loss(input_weights) + \
             lamda * tf.nn.l2_loss(output_weights) + \
             lamda * tf.nn.l2_loss(b) + \
@@ -110,40 +161,42 @@ class RNN(object):
     
     def evaluation(self, logits, labels):
         """Evaluate the quality of the logits at predicting the label.
+        
         Args:
-          logits: Logits tensor, float - [batch_size, NUM_CLASSES].
+          logits: Logits tensor, float - [batch_size, label_size].
           labels: Labels tensor, int32 - [batch_size], with values in the
             range [0, NUM_CLASSES).
+            
         Returns:
           A scalar int32 tensor with the number of examples (out of batch_size)
           that were predicted correctly.
         """
-        # For a classifier model, we can use the in_top_k Op.
-        # It returns a bool tensor with shape [batch_size] that is true for
-        # the examples where the label is in the top k (here k=1)
-        # of all logits for that example.
-        #correct = tf.nn.in_top_k(logits[-1], labels, 1)
-        predicts = tf.cast(tf.argmax(logits[-1], axis=1), tf.int32)
+
+        predicts = tf.cast(tf.argmax(logits, axis=1), tf.int32)
         correct = tf.equal(predicts, labels)
+        
         # Return the number of true entries.
         return tf.reduce_sum(tf.cast(correct, tf.int32))
     
-    def subjects_evaluation(self, logits, labels, time_steps):
-        """Evaluate the quality of the logits at predicting the label.
+    def subjects_evaluation(self, logits, labels, series_length, time_steps):
+        """Evaluate the quality of the logits at predicting the label of a subject.
+        
         Args:
-          logits: Logits tensor, float - [batch_size, NUM_CLASSES].
-          labels: Labels tensor, int32 - [batch_size], with values in the
-            range [0, NUM_CLASSES).
+            logits: Logits tensor, float - [batch_size, label_size].
+            labels: Labels tensor, int32 - [batch_size], with values in the
+                range [0, NUM_CLASSES).
+            time_steps: time step in a sequence
+            series_length: total series length (not sub-series length)
+        
+            
         Returns:
           A scalar int32 tensor with the number of examples (out of batch_size)
           that were predicted correctly.
         """
-        # For a classifier model, we can use the in_top_k Op.
-        # It returns a bool tensor with shape [batch_size] that is true for
-        # the examples where the label is in the top k (here k=1)
-        # of all logits for that example.
-        predicts = logits[-1]
-        subject_logits, subject_labels = self._get_subjects(predicts, labels, time_steps)
+        subject_logits, subject_labels = self._form_subject(logits, 
+                                                            labels, 
+                                                            series_length, 
+                                                            time_steps)
         predict_subject_labels = []
         for subject_logit in subject_logits:
             #subject_softmax = tf.nn.softmax(subject_logit)
@@ -157,13 +210,14 @@ class RNN(object):
         
         correct_subjects = tf.equal(predict_subject_labels, subject_labels)
         correct_num = tf.reduce_sum(tf.cast(correct_subjects, tf.int32))
+        
         return correct_num
     
-    def _get_subjects(self, logits, labels, time_steps):
+    def _form_subject(self, logits, labels, series_length, time_steps):
         subject_logits = []
         subject_labels = []
         
-        group_size = 120/time_steps
+        group_size = series_length/time_steps
         logtis_num = logits.get_shape()[0]
         #assert logtis_num % group_size == 0
         subjects_num = logtis_num / group_size
@@ -177,8 +231,20 @@ class RNN(object):
         return subject_logits, subject_labels
     
     def train(self, loss, learning_rate):
-        # Create the gradient descent optimizer with the given learning rate.
-        #optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+        """Sets up the training Ops.
+        
+        Creates an Adadelta optimizer.
+        
+        The Op returned by this function is what must be passed to the
+        `sess.run()` call to cause the model to train.
+        
+        Args:
+          loss: Loss tensor, from loss().
+          learning_rate: The learning rate to use for the optimizer.
+          
+        Returns:
+          train_op: The Op for training.
+        """
         optimizer = tf.train.AdadeltaOptimizer(learning_rate)
         # Create a variable to track the global step.
         global_step = tf.Variable(0, name='global_step', trainable=False)

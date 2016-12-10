@@ -1,15 +1,18 @@
-from autoencoder import Autoencoder
-from six.moves import xrange
 import argparse
-from autoencoder_data_reader import read_data_sets
-from datasets import Dataset
-import tensorflow as tf
+import os
+import random
 import sys
 import time
-import numpy as np
-import random
+
 from tensorflow.examples.tutorials.mnist import input_data
-import os
+
+from autoencoder import Autoencoder
+from autoencoder_data_reader import read_data_sets
+from datasets import Dataset
+import numpy as np
+from six.moves import xrange
+import tensorflow as tf
+
 
 # Basic model parameters as external flags.
 FLAGS = None
@@ -22,27 +25,30 @@ def placeholder_inputs(batch_size):
   Args:
     batch_size: The batch size will be baked into both placeholders.
   Returns:
-    inputs_placeholder: Images placeholder.
+    inputs_placeholder: Time points placeholder.
   """
 
   inputs_placeholder = tf.placeholder(tf.float32, shape=(batch_size,
-                                                         FLAGS.roi_size))
+                                                         FLAGS.roi_num))
   return inputs_placeholder
   
 def fill_feed_dict(dataset, inputs_placeholder):
   """Fills the feed_dict for training the given step.
+  
   A feed_dict takes the form of:
   feed_dict = {
       <placeholder>: <tensor of values to be passed for placeholder>,
       ....
   }
+  
   Args:
-    data_set: The set of images and labels, from input_data.read_data_sets()
-    images_pl: The images placeholder, from placeholder_inputs().
-    labels_pl: The labels placeholder, from placeholder_inputs().
+    data_set: The set of time points, from autoencoder_data_reader.read_data_sets().
+    inputs_placeholder: The time points placeholder, from placeholder_inputs().
+    
   Returns:
     feed_dict: The feed dictionary mapping from placeholders to values.
   """
+  
   # Create the feed_dict for the placeholders filled with the next
   # `batch size` examples.
   inputs_feed = dataset.next_batch_samples(FLAGS.batch_size)
@@ -57,45 +63,61 @@ def do_eval(sess,
             inputs_placeholder,
             data_set):
     """Runs one evaluation against the full epoch of data.
+    
     Args:
       sess: The session in which the model has been trained.
-      eval_correct: The Tensor that returns the number of correct predictions.
-      images_placeholder: The images placeholder.
-      labels_placeholder: The labels placeholder.
-      data_set: The set of images and labels to evaluate, from
-        input_data.read_data_sets().
+      eval_correct: The Tensor that returns batch loss.
+      inputs_placeholder: The time points placeholder.
+      data_set: The set of time_points to evaluate, from
+            autoencoder_data_reader.read_data_sets().
     """
     # And run one epoch of eval.
     total_loss = 0.0  # Counts the number of correct predictions.
     steps_per_epoch = data_set.num_examples // FLAGS.batch_size
     num_examples = steps_per_epoch * FLAGS.batch_size
+    
     for step in xrange(steps_per_epoch):
       feed_dict = fill_feed_dict(data_set, inputs_placeholder)
       loss = sess.run(eval_correct, feed_dict=feed_dict) 
       total_loss += loss * int(inputs_placeholder.get_shape()[0])
     
-    print "loss: " + str(total_loss/num_examples)
+    print "epoch loss: " + str(total_loss/num_examples) + "\n"
+
+def parse_layer_sizes(lay_sizes_str):
+    layer_sizes = []
+    for size in lay_sizes_str.split():
+        layer_sizes.append(int(size))
+    
+    return layer_sizes
 
 def train(_):
+    """Train autoencoder for a number of steps."""
+    
     if tf.gfile.Exists(FLAGS.log_dir):
         tf.gfile.DeleteRecursively(FLAGS.log_dir)
     tf.gfile.MakeDirs(FLAGS.log_dir)
     
-    datasets = read_data_sets(FLAGS.input_data_dir)
-    #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
+    datasets = read_data_sets(FLAGS.input_data_dir, 
+                              FLAGS.series_length, 
+                              FLAGS.roi_num)
+    layer_sizes = parse_layer_sizes(FLAGS.layer_sizes)
     
-    autoencoder = Autoencoder(FLAGS.layer_sizes)
+    autoencoder = Autoencoder(layer_sizes)
     
     with tf.Graph().as_default(), tf.Session() as session:
         inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
         
         encoded_inputs = autoencoder.inference(inputs_placeholder)
-        inference_op = autoencoder.inference(inputs_placeholder, False)
         loss = autoencoder.loss(encoded_inputs, inputs_placeholder)
+        
+        # Run one step of the model. 
         train_op = autoencoder.train(loss, FLAGS.learning_rate)
+        
         eval_correct = autoencoder.evaluation(encoded_inputs, inputs_placeholder)
         
         init = tf.global_variables_initializer()
+        
+        # Create a saver for writing training checkpoints.
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
         checkpoint_file = os.path.join(FLAGS.log_dir, 'autoencoder.ckpt')
         session.run(init)
@@ -104,30 +126,38 @@ def train(_):
             start_time = time.time()
             
             feed_dict = fill_feed_dict(datasets.train, inputs_placeholder)
-            _, loss_value, encoded_inputs = session.run([train_op, loss, inference_op], feed_dict=feed_dict)
+            _, loss_value = session.run([train_op, loss], feed_dict=feed_dict)
             
             duration = time.time() - start_time
             if step % 100 == 0:
-                print loss_value
-                print encoded_inputs[0]
-                print encoded_inputs[1]
+                print "batch loss:" + str(loss_value)
+            if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
                 do_eval(session, eval_correct, inputs_placeholder, datasets.train)
                 saver.save(session, checkpoint_file, global_step=step)
         
         saver.save(session, checkpoint_file)
                 
 def inference(_):
+    """ Inference to get the encoded input of the dataset and write to output file."""
+    
     if tf.gfile.Exists(FLAGS.output_dir):
         tf.gfile.DeleteRecursively(FLAGS.output_dir)
     tf.gfile.MakeDirs(FLAGS.output_dir)
     
-    FLAGS.batch_size = 135
-    datasets = read_data_sets(FLAGS.input_data_dir, False)
+    # Ensure to process a scan at one time.
+    FLAGS.batch_size = FLAGS.series_length
     
-    autoencoder = Autoencoder(FLAGS.layer_sizes)
+    datasets = read_data_sets(FLAGS.input_data_dir, 
+                              FLAGS.series_length, 
+                              FLAGS.roi_num, 
+                              False)
+    layer_sizes = parse_layer_sizes(FLAGS.layer_sizes)
+    
+    autoencoder = Autoencoder(layer_sizes)
     with tf.Graph().as_default(), tf.Session() as session:
         inputs_placeholder = placeholder_inputs(FLAGS.batch_size)
         
+        # Only get the encoded input.
         inference_op = autoencoder.inference(inputs_placeholder, False)
         
         saver = tf.train.Saver(write_version=tf.train.SaverDef.V2)
@@ -158,14 +188,8 @@ if __name__ == '__main__':
     parser.add_argument(
         '--action',
         type=str,
-        default='train',
-        help='Initial learning rate.'
-    )
-    parser.add_argument(
-        '--layer_sizes',
-        type=list,
-        default=[200, 100, 50, 5],
-        help='Initial learning rate.'
+        default='inference',
+        help="Actions: 'train' or 'inference'."
     )
     parser.add_argument(
         '--learning_rate',
@@ -174,9 +198,27 @@ if __name__ == '__main__':
         help='Initial learning rate.'
     )
     parser.add_argument(
+        '--series_length',
+        type=int,
+        default=135,
+        help='Length of whole time series'
+    )
+    parser.add_argument(
+        '--layer_sizes',
+        type=str,
+        default='200 100 50 5',
+        help='Layer sizes until encoded layer'
+    )
+    parser.add_argument(
+        '--roi_num',
+        type=int,
+        default=120,
+        help='Number of ROIs.'
+    )
+    parser.add_argument(
         '--max_steps',
         type=int,
-        default=50000,
+        default=20000,
         help='Number of steps to run trainer.'
     )
     parser.add_argument(
@@ -189,7 +231,7 @@ if __name__ == '__main__':
         '--output_dir',
         type=str,
         default='/tmp/data',
-        help='Directory to put the input data.'
+        help='Directory to write the inferenced data.'
     )
     parser.add_argument(
         '--input_data_dir',
@@ -201,13 +243,7 @@ if __name__ == '__main__':
       '--log_dir',
       type=str,
       default='/tmp/data',
-      help='Directory to put the log data.'
-  )
-    parser.add_argument(
-        '--roi_size',
-        type=int,
-        default=120,
-        help='Number of ROI.'
+      help='Directory to put the log data, including trained model data.'
     )
     
     FLAGS, unparsed = parser.parse_known_args()
