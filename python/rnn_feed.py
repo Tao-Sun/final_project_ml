@@ -117,6 +117,7 @@ def plot_data(train_precision,
               file_time):
     plot_file = FLAGS.output_dir + '/plot_' + str(file_time) + '.png'
     
+    plt.figure(figsize=(10, 20))
     ax = plt.gca()
     
     ax.set_ylim([0, 1])
@@ -198,6 +199,11 @@ def main(_):
 #                 print loss_value
             if (step + 1) % 1000 == 0:
                 print str(step+1) + " steps completed!"
+            if (step + 1) % 5000 == 0:
+                print train_precision
+                print train_subject_precision
+                print test_precision
+                print test_subject_precision
             if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
                 #print('Training Data Eval:')
                 train_precision.append(do_eval(session,
@@ -253,25 +259,25 @@ if __name__ == '__main__':
     parser.add_argument(
         '--max_steps',
         type=int,
-        default=100000,
+        default=20000,
         help='Number of steps to run trainer.'
     )
     parser.add_argument(
         '--series_length',
         type=int,
-        default=120,
+        default=135,
         help='Length of whole time series'
     )
     parser.add_argument(
         '--time_steps',
         type=int,
-        default=12,
+        default=9,
         help='number of time steps in a series'
     )
     parser.add_argument(
       '--batch_size',
       type=int,
-      default=10,
+      default=15,
       help='Batch size.  Must divide evenly into the dataset sizes.'
     )
     parser.add_argument(

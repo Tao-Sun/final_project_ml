@@ -20,6 +20,7 @@ from tensorflow.python.ops import variable_scope
 from tensorflow.python.ops.math_ops import sigmoid
 from tensorflow.python.ops.math_ops import tanh
 
+import numpy as np
 import tensorflow as tf
 
 
@@ -45,15 +46,25 @@ class RNN(object):
         
         with variable_scope.variable_scope(scope or type(self).__name__):            
             state_weights = tf.get_variable("state_weights", \
-                                            shape=[self._state_size, self._state_size])
-#                 initializer= tf.random_uniform([self._state_size, self._state_size], \
-#                                                -1.0/math.sqrt(self._state_size), \
-#                                                1.0/math.sqrt(self._state_size)))
+                                            #shape=[self._state_size, self._state_size])
+                initializer= tf.random_uniform([self._state_size, self._state_size], \
+                                               -1.0/math.sqrt(self._state_size), \
+                                               1.0/math.sqrt(self._state_size)))
+#                 initializer= tf.scalar_mul(1.0/np.sqrt(self._state_size),
+#                                            tf.random_normal([self._state_size, self._state_size], \
+#                                                           0.0, \
+#                                                           1.0)))
             input_weights = tf.get_variable("input_weights", \
-                                            shape=[self._input_size, self._state_size])
-#                 initializer= tf.random_uniform([self._input_size, self._state_size], \
-#                                                -1.0/math.sqrt(self._input_size), \
-#                                                1.0/math.sqrt(self._input_size)))
+                                            #shape=[self._input_size, self._state_size])
+                initializer= tf.random_uniform([self._input_size, self._state_size], \
+                                               -1.0/math.sqrt(self._input_size), \
+                                               1.0/math.sqrt(self._input_size)))
+#                 initializer= tf.scalar_mul(1.0/np.sqrt(self._state_size),
+#                                            tf.random_uniform([self._input_size, self._state_size], \
+#                                                              0.0, \
+#                                                              1.0)))
+#             b = tf.get_variable("b", initializer=tf.random_uniform([self._state_size], 0.0, 1.0))
+#             c = tf.get_variable("c", initializer=tf.random_uniform([self._label_size], 0.0, 1.0))
             b = tf.get_variable("b", initializer=tf.zeros([self._state_size]))
             c = tf.get_variable("c", initializer=tf.zeros([self._label_size]))
             
@@ -70,10 +81,14 @@ class RNN(object):
             cell_states = self._activation(linear_states)
             
             output_weights = tf.get_variable("output_weight", \
-                                             shape=[self._state_size, self._label_size])
-#                 initializer= tf.random_uniform([self._state_size, self._label_size], \
-#                                                -1.0/math.sqrt(self._state_size), \
-#                                                1.0/math.sqrt(self._state_size)))
+                                             #shape=[self._state_size, self._label_size])
+                initializer= tf.random_uniform([self._state_size, self._label_size], \
+                                               -1.0/math.sqrt(self._state_size), \
+                                               1.0/math.sqrt(self._state_size)))
+#                 initializer= tf.scalar_mul(1.0/np.sqrt(self._label_size),
+#                                            tf.random_uniform([self._state_size, self._label_size], \
+#                                                              0.0, \
+#                                                              1.0)))
             if dropout:
                 cell_outputs = math_ops.matmul(nn_ops.dropout(cell_states, 0.5), output_weights) + c
             else:
