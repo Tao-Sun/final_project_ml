@@ -74,14 +74,14 @@ def get_data_set(examples, labels, start, end, series_length, time_steps, shuffl
     dataset = Dataset(dataset_examples, dataset_labels)
     return dataset
 
-def read_data_sets(data_dir, series_length, time_steps, shuffle=True):
+def read_data_sets(data_dir, series_length, time_steps, input_size, shuffle=True):
     """
     Set up train, validation and test data.
     """
     
-    with open(data_dir + '/encoded_samples.txt', 'r') as f:
+    with open(data_dir + '/encoded_samples_' +  str(input_size) + '.txt', 'r') as f:
         subject_examples = extract_subject_examples(f, series_length)
-    with open(data_dir + '/encoded_labels.txt', 'r') as f:
+    with open(data_dir + '/encoded_labels_' +  str(input_size) + '.txt', 'r') as f:
         subject_labels = []
         for line in f:
             subject_labels.append(line.strip())

@@ -117,8 +117,11 @@ def plot_data(train_precision,
               file_time):
     plot_file = FLAGS.output_dir + '/plot_' + str(file_time) + '.png'
     
-    plt.figure(figsize=(10, 20))
+    plt.figure(figsize=(20, 9))
     ax = plt.gca()
+    
+    xaxisLocator = ticker.MultipleLocator(base=10000)
+    ax.yaxis.set_major_locator(xaxisLocator)
     
     ax.set_ylim([0, 1])
     yaxisLocator = ticker.MultipleLocator(base=0.05)
@@ -159,9 +162,12 @@ def main(_):
     series_length = FLAGS.series_length
     
     if (batch_size*time_steps) % series_length != 0:
+        print batch_size
+        print time_steps
+        print series_length
         raise ValueError('(batch_size*time_steps)%series_length shoule equal 0')
     
-    datasets = read_data_sets(FLAGS.input_data_dir, series_length, time_steps)
+    datasets = read_data_sets(FLAGS.input_data_dir, series_length, time_steps, input_size)
     #data_sets = input_data.read_data_sets(FLAGS.input_data_dir)
     with tf.Graph().as_default(), tf.Session() as session:
         inputs_placeholder, labels_placeholder = placeholder_inputs(FLAGS.batch_size)
@@ -197,13 +203,13 @@ def main(_):
             
 #             if (step + 1) % 100 == 0:
 #                 print loss_value
-            if (step + 1) % 1000 == 0:
+            if (step + 1) % 10000 == 0:
                 print str(step+1) + " steps completed!"
-            if (step + 1) % 5000 == 0:
-                print train_precision
-                print train_subject_precision
-                print test_precision
-                print test_subject_precision
+#             if (step + 1) % 10000 == 0:
+#                 print train_precision
+#                 print train_subject_precision
+#                 print test_precision
+#                 print test_subject_precision
             if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
                 #print('Training Data Eval:')
                 train_precision.append(do_eval(session,
@@ -259,7 +265,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--max_steps',
         type=int,
-        default=20000,
+        default=200000,
         help='Number of steps to run trainer.'
     )
     parser.add_argument(
@@ -289,7 +295,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--state_size',
         type=int,
-        default=40,
+        default=80,
         help='vector length of the hidden state'
     )
     parser.add_argument(

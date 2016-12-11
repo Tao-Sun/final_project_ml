@@ -1,55 +1,33 @@
-\section{Experimental Evaluation}
 
-%This study is designed as a pilot study and serves to identify the appropriate difficulty for the Petri net material.
-%The amount of places and transitions and their interconnection should make the task feasible, meaning the recall rate should be far above a randomly drawn new Petri net, but still each recalled drawing should contain some error.
-%Successful analyses have been conducted with accuracy measure from 58\% correct recall \cite{egan1979chunking} up to 95\% \cite{moss2006role} which is hence taken as the desired lower and upper boundary respectively.
-%
-%\subsection{Method}
-%
-%\subsubsection{Participants}
-%Three first-year students, three third-year students who have taken at least one Petri net class and three scientific employees who work with Petri net related material on a daily basis shall participate in this study.
-%The students' participation in experiments is mandatory and part of their curriculum, the scientific assistants get cookies as a reward.
-%
-%\subsubsection{Materials}
-%Petri nets are randomly generated (cf. Appendix~\ref{app:generated}) and visually formatted (cf. Appendix~\ref{app:formatted}).
-%A range of 5 and 30 graph elements ($n$) is used with a number of interconnections ($f$) between $f=n-1$ and $f=round(3/2 * n)$.
-%Grid lines are drawn onto the background so that each place or transition is on an intersection of one of the vertical and horizontal lines.
-%
-%\subsubsection{Procedure}
-%In the beginning the participant is introduced in using \citetitle{renew} \cite{renew} as a tool for drawing Petri nets.
-%Further participant is informed that any element which is not on one of the intersections between the vertical and horizontal lines is removed during the scoring process.
-%Each participant does 13 runs from which the first run is discarded as a demo run.
-%In that way each participant sees 13 different Petri nets.
-%The participant sits in front of the screen and is presented one of the generated Petri nets for 5 seconds.
-%After that immediately the recall phase starts.
-%Using \citetitle{renew} the participant is asked to reconstruct the previously seen net.
-%On the background the same grid lines are presented and the participant is asked to position the places and transitions on the grid lines as the participant has seen it before.
-%After the participant believes that everything which could be remembered has been drawn, the file is saved, printed and closed.
-%The participant is then asked to indicate the used strategy on the print-out and circle which symbols were grouped together.
-%
-%\subsection{Scoring}
-%\label{subsec:scoring}
-%The scoring is inspired on a previous study on mechanical engineers \cite{moss2006role} which used an extended scoring system of \textcite{chase1973mind}.
-%The scoring of each recall is done in the following manner:
-%
-%\begin{APAenumerate}
-%	\item Each place and transition which is not drawn on the grid intersections is deleted (including the arcs which connected the deleted element with other elements).
-%	\item  Each place and transition which has been omitted on the grid is added to the element omission score.
-%	\item Each place and transition which appears on a wrong position on the grid is added to the element insertion error score.
-%	\item Each arc which connects two previously unconnected elements is added to the arc wrong connection score.
-%	\item Each arc which is omitted is added to the arc omission score.  
-%	\item Each arc which points into the wrong direction is added to the arc wrong direction score.
-%\end{APAenumerate}
-%
-%The total weighted error score for a drawing is the weighted sum of all the errors mentioned above.
-%Each error score is weighted with $1$ except the arc wrong direction score which is weighted with $0.5$.
-%
-%\subsection{Data Analysis}
-%
-%For each participant and each Petri net first the error score is calculated.
-%Then correct recall score is calculated as a sum of all correctly positioned elements.
-%Then the ratio of the correct recall score to the sum of both the total weighted error score and the correct recall score is calculated.
-%If this ratio is in the range of 58 to 95\%, it is selected as appropriate material.
-%Otherwise the Petri net is discarded.
-%Further the Petri nets are ranked according to their ratio and the rank list is partitioned into three proportions of similar sizes.
-%The partitions are labeled with their respective difficulty level, viz. easy, medium and difficult.
+\section{Experimental Evaluation}
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{typical_case.png}
+    \caption{A typical training case.}
+    \label{fig:awesome_image}
+\end{figure}
+\FloatBarrier
+Figure 4 is a typical accuracy plot when training the RNN model. In this experiment, the length of the time series is set as 135, which is splitted into 15 segments with each sub-series length 9. The vector size of each time point in the time series (i.e. the output dimension of the DAE) is 5. Each batch of 15 examples is fed into the Adadelta optimizer with its initial learning rate 1. We choose tanh activation function, which apparently accelerate the learning in the series of experiments. Both accuracy for sub-series and ensemble accuracy are reported in the graph. Compared to mini-batch Gradient Descent Optimizer (which is not shown here), Adadelta optimizer shows better converge property for this classification task.  After 200,000 steps (about 58 epoches), the ensemble training accuracy arrives 100\% although the training accuracy is just beyond 80\%. In the steps before 5000, there is a obvious platform for the training accuracies, which might be brought by neuron saturation. The testing performance reaches its maximum value  (around 65\%) very quickly in the training. However, it begins to drop since training accuracy begin a relative rapid increase period. This implies that early stop technique need to be employed in this classification task although dropout technique already makes significant improvements in preventing overfitting. The ensemble accuracies for the testing data are always higher than their corresponding accuracies without ensemble. Since data fed into the high-level classifiers are not dependent, these accuracies are much lower than what are expected.
+
+
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{state_size.png}
+    \caption{The influence of hidden node units number on accuracy.}
+    \label{fig:awesome_image}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{batch_size.png}
+    \caption{The influence of batch size on accuracy.}
+    \label{fig:awesome_image}
+\end{figure}
+
+It is proved by the experiments that number of hidden note units have substantial influence on the final testing accuracy, which can be indicated Figure 5. In this graph, model with 4 different hidden node configuration is plotted. It can be concluded that the learning speed raises with the increase size of hidden units. Even in the 10 hidden node units case, no obvious improvements can be identified between training steps. In terms of testing accuracy, the 60 units case does not have essential enhancement comparing to the 40 units. 
+
+Figure 6 shows the influence of batch size on the accuracy. All the hyper-parameter settings but the batch-size are the same, which shows that relatively low batch size setting can lead to better testing accuracies.
+
+
+

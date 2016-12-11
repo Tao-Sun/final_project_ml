@@ -1,12 +1,14 @@
 \documentclass[
     a4paper,
     man,
+    floatsintext,
     british
 ]{apa6}
 
 \usepackage[british]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{epstopdf}
+\usepackage[verbose]{placeins}
 \usepackage{csquotes}
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
@@ -14,9 +16,8 @@
  \usepackage[at]{easylist}
  \usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage{float}
+%\usepackage{float}
 \usepackage[absolute]{textpos}
-\usepackage{afterpage}
 \usepackage[
     style=apa,
     backend=biber,
@@ -53,7 +54,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{Classification of Alzhermer Disease and Normal Congnitive Status with Recurrent Neural Networks in  Resting State fMRI}
-\shorttitle{AD Identification with RNN in fMRI}
+\shorttitle{AD Identification with RNN in rs-fMRI}
 \author{Tao Sun}
 \affiliation{Ohio University\\
 2016}
@@ -69,8 +70,8 @@
 
 \printbibliography
 
-\appendix
+%\appendix
 
-\input{appendix}
+%\input{appendix}
 
 \end{document}

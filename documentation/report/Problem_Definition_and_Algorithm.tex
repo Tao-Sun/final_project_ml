@@ -6,30 +6,30 @@ The data used for training and test of the proposed classifier are retrieved fro
 
 The preprocess can be divided into 4 phases (\cite{suk16}) :
 	\begin{enumerate}
-	\item Preprocessing of anatomical images
-	\item  Preprocessing of functional images
-	\item Anatomical standardization of functional images
-	\item Removal of noise signa
+	\item preprocessing of anatomical images;
+	\item  preprocessing of functional images;
+	\item anatomical standardization of functional images;
+	\item removal of noise signal.
 	\end{enumerate}
 
-The results of the preproces are a set of mean time series 
+The results of the preprocess are a set of mean time series 
 \begin{center}
 $ F^{(n)} \in \{ \emph{F} | \emph{F} = \left[ \textbf{f}_1, \cdots, \textbf{f}_t, \cdots, \textbf{f}_T \right],  \textbf{f}_t \in  \mathbb{R}^{R} \}, n=1,  \cdots, N$ ,
 \end{center}
 where $N=228$ is number of the scans, $R=120$ is the number of  ROIs, and $T=135$ is the length of a time series. 
 
-\subsection{Dimension Reduction with DAE}
+\subsection{Dimensionality Reduction with DAE}
 
-\begin{figure}[H!]
+\begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\textwidth]{autoencoder.png}
-    \caption{Autoencoder}
+    \caption{Autoencoder.}
     \label{fig:awesome_image}
 \end{figure}
-\begin{figure}[H!]
+\begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\textwidth]{stackedDAE.png}
-    \caption{Stacked Autoencoder}
+    \caption{Stacked autoencoder.}
     \label{fig:awesome_image}
 \end{figure}
 
@@ -42,7 +42,7 @@ is expected to converted from its original form
 $\emph{F} = \left[ \textbf{f}_1, \cdots, \textbf{f}_t, \cdots, \textbf{f}_T \right], \textbf{f}_t \in \mathbb{R}^{R}. $
 \end{center} 
 
-A stacked autoencoder (Figure 2) is composed of multiple layers of autoencoders, in which the outputs of each layer is fed as the inputs of successive layer \cite{stackedDAE}. Usually greedy layer-wise training is applied to train a stacked autoencoder. In current implementation, training for the stacked model is similar to the non-stacked one. Lleast-square loss function with  is selected to train the stacked model, in which the difference is directly computed between input layer and final target layer. Although that setting of the hidden layer configure is  heuristic, the combination in \textcite{suk16}'s paper is followed. 
+A stacked autoencoder (Figure 2) is composed of multiple layers of autoencoders, in which the outputs of each layer is fed as the inputs of successive layer \cite{stackedDAE}. Usually greedy layer-wise training is applied to train a stacked autoencoder. In current implementation, training for the stacked model is similar to the non-stacked one. Least-square loss function with  is selected to train the stacked model, in which the difference is directly computed between input layer and final target layer. Although that setting of the hidden layer configure is  heuristic, the combination in \textcite{suk16}'s paper is followed. 
 
 After training, only the first part of the DAE (i.e. from input layer to bottleneck hidden layer) is used to transform each $\textbf{f}_t \in  \mathbb{R}^{R}$ into $ \textbf{x}_t \in  \mathbb{R}^{r}$, where $ r < R$. As a result, the encoded representation of a scan becomes
 \begin{center}
@@ -51,7 +51,7 @@ $\emph{X} = \left[ \textbf{x}_1, \cdots, \textbf{x}_t, \cdots, \textbf{x}_T \rig
 
 \subsection{High-level RNN classifiers and their ensemble for subject diagnosis}
 
-\textcite{wee15} proposes a framework for brain functional connectivity analysis, in which the time series of a scan are decomposed into multiple overlapping sub-series by a sliding window. Justified by their work, a encoded time-series is splitted into identical-sized sub-series
+\textcite{wee15} proposes a framework for brain functional connectivity analysis, in which the time series of a scan are decomposed into multiple overlapping sub-series by a sliding window. Justified by their work, an encoded time-series is splitted into identical-sized sub-series
 \begin{center}
 $\emph{X} = \left[ \textbf{x}_1, \cdots, \textbf{x}_s, \cdots, \textbf{x}_{S} \right]$, where $T=n*S, n$ is an integer. 
 \end{center}
@@ -77,11 +77,11 @@ The detailed notations are explained below:
 @ $W^{(s)}$: weight matrix that transform $S_k$ to $y$
 \end{easylist}
 
-\begin{figure}[!htbp]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{rnn.png}
-    \caption{Recurrent Neural Networks}
+    \caption{Recurrent neural networks.}
     \label{fig:awesome_image}
 \end{figure}
 
-In terms of the sub-series setting, data in each time point of a series $\textbf{x}_t$ become the input of a unit. The final output at the end of the sequence is the predicted class (AD or NC) for the whole sub-series. For the purpose of diagnosis of a subject, ensemble learning is used to predict the class for the time-series of a scan. Each high-level classifier votes with equal weight and the class with the most votes is selected as the class of a time series.
+In terms of the sub-series setting, data in each time point of a series $\textbf{x}_t$ become the input of a unit. The final output at the end of the sequence is the predicted class (AD or NC) for the whole sub-series. For the purpose of diagnosis of a subject, ensemble learning is used to predict the class for the time-series of a scan. Each high-level classifier votes with equal weight and the class with the most votes is selected as the class of a time series. For the hight-level classifier, Adadelta optimizer is applied to replace mini-batch Gradient Descent Optimizer. Two regularization techniues, dropout \cite{srivastava14} and L2 regularizer, are used to reduce overfitting. In training, 20\% cell input units and 50\% hidden node units are dropped out when computing $S_k$ and $y$ respectively. In testing, the corresponding two weights, i.e.\ $input_weights$ and $output_weights$, are scaled down the same versions. In addition, each weight and bias in the RNN model is associated with a L2 regularizer in the cross-entropy loss function. 

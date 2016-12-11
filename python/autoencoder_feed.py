@@ -92,7 +92,6 @@ def parse_layer_sizes(lay_sizes_str):
 
 def train(_):
     """Train autoencoder for a number of steps."""
-    
     if tf.gfile.Exists(FLAGS.log_dir):
         tf.gfile.DeleteRecursively(FLAGS.log_dir)
     tf.gfile.MakeDirs(FLAGS.log_dir)
@@ -139,10 +138,8 @@ def train(_):
                 
 def inference(_):
     """ Inference to get the encoded input of the dataset and write to output file."""
-    
-    if tf.gfile.Exists(FLAGS.output_dir):
-        tf.gfile.DeleteRecursively(FLAGS.output_dir)
-    tf.gfile.MakeDirs(FLAGS.output_dir)
+    if tf.gfile.Exists(FLAGS.output_dir) != True:
+        tf.gfile.MakeDirs(FLAGS.output_dir)
     
     # Ensure to process a scan at one time.
     FLAGS.batch_size = FLAGS.series_length
@@ -164,7 +161,7 @@ def inference(_):
         checkpoint_file = os.path.join(FLAGS.log_dir, 'autoencoder.ckpt')
         saver.restore(session, checkpoint_file)
         
-        samples_file = FLAGS.output_dir + '/encoded_samples.txt'
+        samples_file = FLAGS.output_dir + '/encoded_samples_' +  str(layer_sizes[-1]) + '.txt'
         while datasets.train.epochs_completed == 0:
             start_time = time.time()
             
@@ -178,7 +175,7 @@ def inference(_):
                     output.write("\n")
                 output.write("\n")
     
-    labels_file = FLAGS.output_dir + '/encoded_labels.txt'
+    labels_file = FLAGS.output_dir + '/encoded_labels_' +  str(layer_sizes[-1]) + '.txt'
     with open(labels_file, 'a') as output:
         for label in datasets.train.labels:
             output.write(str(label) + '\n')
@@ -218,13 +215,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--max_steps',
         type=int,
-        default=20000,
+        default=50000,
         help='Number of steps to run trainer.'
     )
     parser.add_argument(
       '--batch_size',
       type=int,
-      default=135,
+      default=5,
       help='Batch size.  Must divide evenly into the dataset sizes.'
     )
     parser.add_argument(

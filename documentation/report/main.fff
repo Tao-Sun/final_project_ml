@@ -1,22 +1,8 @@
 \begin{figure*}[hbt]
 \ifnextchar[{\eatarg}{}
-[H!]
-    \centering
-    \includegraphics[width=0.9\textwidth]{autoencoder.png}
-    \caption{Autoencoder}
-    \label{fig:awesome_image}
+[htb]\centering
+\fbox{\parbox{5cm}{\centering Bild\\[5cm]}}
+\caption{Ein Bild}
 \end{figure*}
 \efloatseparator
  
-\begin{figure*}[hbt]
-\ifnextchar[{\eatarg}{}
-[H!]
-    \centering
-    \includegraphics[width=0.9\textwidth]{stackedDAE.png}
-    \caption{Stacked Autoencoder}
-    \label{fig:awesome_image}
-\end{figure*}
-\efloatseparator
- 
-\begin{figure*}[hbt]
-\ifnextchar[{\eatarg}{}
